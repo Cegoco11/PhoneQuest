@@ -1,0 +1,14 @@
+En este documento se mencionan las fuentes de los recursos no hechos por mi:
+-app icon
+Icon made by https://www.flaticon.com/authors/roundicons from www.flaticon.com
+
+-layout_opening
+fondo: https://www.zedge.net/wallpaper/0e57514c-cd61-3f0a-8b6b-216dfd8862f2
+tipografía: https://www.dafont.com/es/arabolical.font
+musica: https://www.youtube.com/watch?v=gXDyiMqs77A
+
+-layout_quest_list:
+musica: https://www.youtube.com/watch?v=Yz0ZHjnsZDE
+jeroglifico: http://blogs.elpais.com/.a/6a00d8341bfb1653ef017d3e036aad970c-pi
+papiro: https://www.roblox.com/library/158013711/1209752019-old-paper-papyrus-scroll-stock
+iconos: https://www.freepik.es/vector-gratis/elementos-egipcios-coloridos_808772.htm Designed by Freepik
