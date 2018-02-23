@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
+import android.util.Log;
 
 
 /**
@@ -37,24 +38,28 @@ public class BatteryChangedListener extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int aux = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
 
+
+        Log.i("BATTERYLISTENER","Detect");
+
         if (level == -5) {
             setLevel(intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0));
         }
 
         if (control){
             if(eleccion){
+                Log.i("CARGAR","level: "+level+"; aux: "+(aux+cantidad));
                if (level < aux-cantidad) {
-                    // Si ha variado hacia arriba o hacia abajo un 1%
-                    QuestList.GenerarNotificacion(2, "Bateria",
-                            "Se ha cargado un 2%", R.drawable.ic_cascos);
+                   Log.i("BATTERYLISTENER","CARGAR LOGRO COMPLETADO");
+                    QuestList.generarNotificacion(2, "Bateria",
+                            "Se ha cargado un "+cantidad+"%", R.drawable.ic_cascos);
                     setControl(false);
-                   QuestList.usarCargarMovil(false);
+                    QuestList.usarCargarMovil(false);
                 }
             } else{
                 if (level > aux+cantidad) {
-                    // Si ha variado hacia arriba o hacia abajo un 1%
-                    QuestList.GenerarNotificacion(3, "Bateria",
-                            "Se ha descargado un 1%", R.drawable.ic_cascos);
+                    Log.i("BATTERYLISTENER","DESCARGAR LOGRO COMPLETADO");
+                    QuestList.generarNotificacion(3, "Bateria",
+                            "Se ha descargado un "+cantidad+"%", R.drawable.ic_cascos);
                     QuestList.usarDescargarMovil(false);
                     setControl(false);
                 }

@@ -15,6 +15,9 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Opening extends AppCompatActivity {
 
     private MediaPlayer op_sound;
@@ -32,6 +35,11 @@ public class Opening extends AppCompatActivity {
         op_sound.start();
     }
 
+    /**
+     *  Metodo para cambiar de actividad
+     *
+     * @param v
+     */
     public void goToQuestList(View v){
         final RelativeLayout aux=findViewById(R.id.PrincipalOpening);
         aux.setClickable(false);
@@ -96,21 +104,17 @@ public class Opening extends AppCompatActivity {
     }
 
     /**
-     * Metodo auxiliar para crear todos los logros
+     * Metodo auxiliar para crear todos los logros con los que se empieza
      *
      * @return
      */
     private ArrayList<Logro> creaLogros(){
         ArrayList<Logro> lista= new ArrayList<Logro>();
-        lista.add(new Logro(R.drawable.icon1,"Mision 1: Conecta los cascos"));
-        lista.add(new Logro(R.drawable.icon2,"Mision 2: Conecta el usb"));
-        lista.add(new Logro(R.drawable.icon3,"Mision 3: Descarga un 1%"));
-        lista.add(new Logro(R.drawable.icon4,"Mision 4: Carga un 2%"));
-//        lista.add(new Logro(R.drawable.icon5,"Mision 5"));
-//        lista.add(new Logro(R.drawable.icon6,"Mision 6"));
-//        lista.add(new Logro(R.drawable.icon7,"Mision 7"));
-//        lista.add(new Logro(R.drawable.icon8,"Mision 8"));
-//        lista.add(new Logro(R.drawable.icon9,"Mision 9"));
+        lista.add(new Logro(1));
+        lista.add(new Logro(2));
+        lista.add(new Logro(3));
+        lista.add(new Logro(2));
+        lista.add(new Logro(4));
         return lista;
     }
 }

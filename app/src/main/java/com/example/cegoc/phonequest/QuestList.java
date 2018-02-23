@@ -1,15 +1,21 @@
 package com.example.cegoc.phonequest;
 
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,19 +29,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+
+/**
+ *
+ */
 public class QuestList extends AppCompatActivity {
 
     private static final UsbChangeListener broadCast_ConectarUsb=
-            new UsbChangeListener();;
+            new UsbChangeListener();
     private static final HeadphonesChangeListener broadCast_ConectarCascos=
-            new HeadphonesChangeListener();;
+            new HeadphonesChangeListener();
     private static final BatteryChangedListener broadCast_DescargarMovil=
-            new BatteryChangedListener(true, 2);;
+            new BatteryChangedListener(false, 2);
     private static final BatteryChangedListener broadCast_CargarMovil=
-            new BatteryChangedListener(false, 1);;
+            new BatteryChangedListener(true, 5);
 
+    private static ArrayList<Logro> logros;
     private MediaPlayer list_sound;
-    private ArrayList<Logro> logros;
     private LinearLayout contenedor;
     private static Context context;
 
@@ -57,13 +67,15 @@ public class QuestList extends AppCompatActivity {
         list_sound.start();
     }
 
-    public void onPause(){
+    @Override
+    protected void onPause(){
         super.onPause();
         guardaLogros(logros);
         list_sound.pause();
     }
 
-    public void onResume(){
+    @Override
+    protected void onResume(){
         super.onResume();
         list_sound.start();
     }
@@ -119,6 +131,8 @@ public class QuestList extends AppCompatActivity {
         ImageView aux_img;
         TextView aux_text;
 
+        final Typeface tf=Typeface.createFromAsset(getAssets(), "arabolic.TTF");
+        // Se genera la estructura del layout que usa los objetos de tipo logro
         for (int i=0; i<logros.size(); i++){
             aux_linear=new LinearLayout(this);
             aux_linear.setOrientation(LinearLayout.HORIZONTAL);
@@ -132,17 +146,30 @@ public class QuestList extends AppCompatActivity {
             aux_text=new TextView(this);
             aux_text.setLayoutParams(params_text);
             aux_text.setText(logros.get(i).getTexto());
+            aux_text.setTypeface(tf);
+            aux_text.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             aux_text.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
 
             aux_linear.addView(aux_img);
             aux_linear.addView(aux_text);
-            aux_linear.setTag(i+1);
+            // Cojo la id del logro actual y lo asigno de tag al boton
+            aux_linear.setTag(logros.get(i).getID_LOGRO());
 
             aux_linear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int tagView=(int)view.getTag();
-                    selectorMision(tagView);
+                    // Gracias a la id que puse en el tag puedo acceder a cada boton
+                    int id=(int)view.getTag();
+                    // Recorro todos los logros
+                    for(Logro o : logros){
+                        int aux=o.getID_LOGRO();
+                        // Si la id del logro es igual a la del tag
+                        if(aux==id){
+                            // Selecciona el tipo de mision y crea un dialogo
+                            creaDialog("Estas seguro?", o.getTipo());
+                            break;
+                        }
+                    }
                 }
             });
 
@@ -221,7 +248,7 @@ public class QuestList extends AppCompatActivity {
      * @param contenido texto que va a tener la notificacion
      * @param img imagen que queremos que se vea (R.drawable.nombre_de_la_imagen)
      */
-    public static void GenerarNotificacion(int id,String titulo, String contenido,int img){
+    public static void generarNotificacion(int id,String titulo, String contenido,int img){
         // Paso 1: creo la notificacion
         NotificationCompat.Builder prueba=new NotificationCompat.Builder(context);
         prueba.setSmallIcon(img);
@@ -240,8 +267,12 @@ public class QuestList extends AppCompatActivity {
      * Elige que broadcast se va a activar dependiendo del parametro
      *
      * @param num
+     * 1- Conectar cascos
+     * 2- Conectar USB
+     * 3- DescargarMovil (2%)
+     * 4- CargarMovil (1%)
      */
-    public void selectorMision(int num){
+    private void selectorMision(int num){
         switch (num){
             case 1:
                 Toast.makeText(context, "Mision 1 activada", Toast.LENGTH_SHORT).show();
@@ -262,5 +293,55 @@ public class QuestList extends AppCompatActivity {
             default:
                 Toast.makeText(context, "No funcional! WIP", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Crea un dialogo personalizado al que se le pasa como parametro el texto
+     * y el tipo para pasarselo al metodo 'selectorMision(int)'
+     *
+     * @param s texto que se vera en el dialogo
+     * @param tipo tipo de logro que queremos activar
+     */
+    private void creaDialog(String s, final int tipo){
+        LayoutInflater inflater = getLayoutInflater();
+        View aux=inflater.inflate(R.layout.custom_dialog,null);
+
+        final Dialog ad=new Dialog(QuestList.this);
+        ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        ad.setContentView(aux);
+
+        TextView texto=aux.findViewById(R.id.custom_dialog_text);
+        texto.setText(s);
+        ImageView btnOk=aux.findViewById(R.id.custom_dialog_btnOk);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setScaleX(1.2f);
+                view.setScaleY(1.2f);
+                Handler handler0 = new Handler();
+                handler0.postDelayed(new Runnable() {
+                    public void run() {
+                        selectorMision(tipo);
+                        ad.dismiss();
+                    }
+                }, 200);
+            }
+        });
+        ImageView btnCancel=aux.findViewById(R.id.custom_dialog_btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setScaleX(1.2f);
+                view.setScaleY(1.2f);
+                Handler handler0 = new Handler();
+                handler0.postDelayed(new Runnable() {
+                    public void run() {
+                        ad.dismiss();
+                    }
+                }, 200);
+            }
+        });
+        ad.create();
+        ad.show();
     }
 }

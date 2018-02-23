@@ -12,3 +12,8 @@ musica: https://www.youtube.com/watch?v=Yz0ZHjnsZDE
 jeroglifico: http://blogs.elpais.com/.a/6a00d8341bfb1653ef017d3e036aad970c-pi
 papiro: https://www.roblox.com/library/158013711/1209752019-old-paper-papyrus-scroll-stock
 iconos: https://www.freepik.es/vector-gratis/elementos-egipcios-coloridos_808772.htm Designed by Freepik
+
+-custom dialog
+tick: http://icongal.com/gallery/icon/73384/128/accept_yes_ok_check_tick_no_hospital
+papiro: http://wiki.metin2.es/index.php/Plantilla:Esbozo
+error: http://icongal.com/gallery/icon/54829/128/actions_dialog_close
