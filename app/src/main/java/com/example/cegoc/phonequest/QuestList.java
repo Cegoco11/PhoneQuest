@@ -3,6 +3,7 @@ package com.example.cegoc.phonequest;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -43,6 +44,8 @@ public class QuestList extends AppCompatActivity {
             new BatteryChangedListener(false, 2);
     private static final BatteryChangedListener broadCast_CargarMovil=
             new BatteryChangedListener(true, 5);
+    private static final BluetoothChangeListener broadCast_ConectarBlue=
+            new BluetoothChangeListener();
 
     private static ArrayList<Logro> logros;
     private MediaPlayer list_sound;
@@ -166,7 +169,7 @@ public class QuestList extends AppCompatActivity {
                         // Si la id del logro es igual a la del tag
                         if(aux==id){
                             // Selecciona el tipo de mision y crea un dialogo
-                            creaDialog("Estas seguro?", o.getTipo());
+                            creaDialog("Estas seguro?", o.getTipo(), view.getTag());
                             break;
                         }
                     }
@@ -174,6 +177,7 @@ public class QuestList extends AppCompatActivity {
             });
 
             contenedor.addView(aux_linear);
+
         }
     }
 
@@ -241,6 +245,19 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
+     * Activa el broadcast que detecta si se activa el bluetooth
+     *
+     * @param estado true para activar, false para detener
+     */
+    public static void usarConectarBluetooth(boolean estado){
+        if(estado){
+            context.registerReceiver(broadCast_ConectarBlue, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        } else{
+            context.unregisterReceiver(broadCast_ConectarBlue);
+        }
+    }
+
+    /**
      * Genera una notificacion
      *
      * @param id id de la notificacion
@@ -269,8 +286,9 @@ public class QuestList extends AppCompatActivity {
      * @param num
      * 1- Conectar cascos
      * 2- Conectar USB
-     * 3- DescargarMovil (2%)
-     * 4- CargarMovil (1%)
+     * 3- Descargar Movil (2%)
+     * 4- Cargar Movil (5%)
+     * 5- Activar Bluetooth
      */
     private void selectorMision(int num){
         switch (num){
@@ -290,6 +308,10 @@ public class QuestList extends AppCompatActivity {
                 Toast.makeText(context, "Mision 4 activada", Toast.LENGTH_SHORT).show();
                 usarCargarMovil(true);
                 break;
+            case 5:
+                Toast.makeText(context, "Mision 5 activada", Toast.LENGTH_SHORT).show();
+                usarConectarBluetooth(true);
+                break;
             default:
                 Toast.makeText(context, "No funcional! WIP", Toast.LENGTH_SHORT).show();
         }
@@ -301,8 +323,9 @@ public class QuestList extends AppCompatActivity {
      *
      * @param s texto que se vera en el dialogo
      * @param tipo tipo de logro que queremos activar
+     * @param tag tag del linear layout que se ha clickado
      */
-    private void creaDialog(String s, final int tipo){
+    private void creaDialog(String s, final int tipo, final Object tag){
         LayoutInflater inflater = getLayoutInflater();
         View aux=inflater.inflate(R.layout.custom_dialog,null);
 
@@ -321,6 +344,8 @@ public class QuestList extends AppCompatActivity {
                 Handler handler0 = new Handler();
                 handler0.postDelayed(new Runnable() {
                     public void run() {
+                        //
+                        contenedor.findViewWithTag(tag).setClickable(false);
                         selectorMision(tipo);
                         ad.dismiss();
                     }

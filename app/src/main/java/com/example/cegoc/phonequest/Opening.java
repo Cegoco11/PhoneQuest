@@ -113,8 +113,8 @@ public class Opening extends AppCompatActivity {
         lista.add(new Logro(1));
         lista.add(new Logro(2));
         lista.add(new Logro(3));
-        lista.add(new Logro(2));
         lista.add(new Logro(4));
+        lista.add(new Logro(5));
         return lista;
     }
 }

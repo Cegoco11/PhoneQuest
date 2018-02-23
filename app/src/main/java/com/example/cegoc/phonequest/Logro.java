@@ -27,8 +27,9 @@ public class Logro implements Serializable{
      * @param tipo
      *   1- Conectar cascos
      *   2- Conectar USB
-     *   3- DescargarMovil
-     *   4- CargarMovil
+     *   3- Descargar Movil
+     *   4- Cargar Movil
+     *   5- Activar Bluetooth
      */
     public Logro(int tipo){
         this.estado=false;
@@ -45,11 +46,15 @@ public class Logro implements Serializable{
                 break;
             case 3:
                 this.img=R.drawable.icon3;
-                this.texto="DescargarMovil";
+                this.texto="Descargar Movil";
                 break;
             case 4:
                 this.img=R.drawable.icon4;
-                this.texto="CargarMovil";
+                this.texto="Cargar Movil";
+                break;
+            case 5:
+                this.img=R.drawable.icon5;
+                this.texto="Activar Bluetooth";
                 break;
             default:
                 this.img=R.drawable.icon9;
