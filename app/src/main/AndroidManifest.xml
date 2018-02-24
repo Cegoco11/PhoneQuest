@@ -11,15 +11,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Opening"
+        <activity
+            android:name=".Opening"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QuestList"
+        <activity
+            android:name=".QuestList"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Menu"
             android:screenOrientation="portrait"></activity>
     </application>
 

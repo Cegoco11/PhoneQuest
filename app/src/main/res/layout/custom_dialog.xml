@@ -4,13 +4,13 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/custom">
+    android:background="@drawable/custom_dialog">
 
     <TextView
         android:id="@+id/custom_dialog_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="45dp"
         android:fontFamily="@font/arabolic"
         android:paddingEnd="40dp"
         android:paddingStart="40dp"

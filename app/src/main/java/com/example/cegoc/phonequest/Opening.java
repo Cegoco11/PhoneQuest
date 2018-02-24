@@ -36,11 +36,11 @@ public class Opening extends AppCompatActivity {
     }
 
     /**
-     *  Metodo para cambiar de actividad
+     *  Metodo para cambiar a la actividad de Menu.class
      *
      * @param v
      */
-    public void goToQuestList(View v){
+    public void goToMenu(View v){
         final RelativeLayout aux=findViewById(R.id.PrincipalOpening);
         aux.setClickable(false);
         aux.setBackground(getDrawable(R.drawable.bg2));
@@ -60,11 +60,11 @@ public class Opening extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                Intent i= new Intent(Opening.this, QuestList.class);
+                Intent i= new Intent(Opening.this, Menu.class);
                 startActivity(i);
                 finish();
             }
-        }, 2100);
+        }, 1900);
     }
 
     public void onPause(){

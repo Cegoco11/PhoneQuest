@@ -88,7 +88,7 @@ public class QuestList extends AppCompatActivity {
      *
      * @param lista logros a guardar
      */
-    private void guardaLogros(ArrayList<Logro> lista){
+    public void guardaLogros(ArrayList<Logro> lista){
         FileOutputStream fos;
         ObjectOutputStream out = null;
         try {
@@ -103,9 +103,9 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
-     * Carga los datos del archivo file_logros
+     * Carga los datos del archivo file_logros en la variable logros
      */
-    private void cargaLogros(){
+    public void cargaLogros(){
         try {
             FileInputStream fis = openFileInput("file_logros");
             ObjectInputStream in = new ObjectInputStream(fis);
@@ -125,13 +125,16 @@ public class QuestList extends AppCompatActivity {
         final LinearLayout.LayoutParams params_linear=new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final LinearLayout.LayoutParams params_img=new LinearLayout.LayoutParams
-                (toDp(80), toDp(80));
+                (toDp(75), toDp(75));
+        final LinearLayout.LayoutParams params_img2=new LinearLayout.LayoutParams
+                (toDp(40), toDp(40));
+        params_img2.gravity= Gravity.CENTER;
         final LinearLayout.LayoutParams params_text=new LinearLayout.LayoutParams
-                (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                (toDp(170), ViewGroup.LayoutParams.WRAP_CONTENT);
         params_text.gravity= Gravity.CENTER;
 
         LinearLayout aux_linear;
-        ImageView aux_img;
+        ImageView aux_img, aux_img2;
         TextView aux_text;
 
         final Typeface tf=Typeface.createFromAsset(getAssets(), "arabolic.TTF");
@@ -146,6 +149,15 @@ public class QuestList extends AppCompatActivity {
             aux_img.setImageResource(logros.get(i).getImg());
             aux_img.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
 
+            aux_img2=new ImageView(this);
+            aux_img2.setLayoutParams(params_img2);
+            // Falta poner un tag a la imagen, para despues cuando se haga click
+            // buscar por tag, y hacerla visible. Con esto el usuario sabra que mision tiene activa
+            // ya que se cambiara la visibilidad de la imagen
+            aux_img2.setVisibility(View.INVISIBLE);
+            aux_img2.setImageResource(R.drawable.scarab);
+            aux_img2.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
+
             aux_text=new TextView(this);
             aux_text.setLayoutParams(params_text);
             aux_text.setText(logros.get(i).getTexto());
@@ -155,6 +167,8 @@ public class QuestList extends AppCompatActivity {
 
             aux_linear.addView(aux_img);
             aux_linear.addView(aux_text);
+            aux_linear.addView(aux_img2);
+
             // Cojo la id del logro actual y lo asigno de tag al boton
             aux_linear.setTag(logros.get(i).getID_LOGRO());
 
@@ -169,6 +183,7 @@ public class QuestList extends AppCompatActivity {
                         // Si la id del logro es igual a la del tag
                         if(aux==id){
                             // Selecciona el tipo de mision y crea un dialogo
+                            Menu.click_sound.start();
                             creaDialog("Estas seguro?", o.getTipo(), view.getTag());
                             break;
                         }
@@ -339,12 +354,13 @@ public class QuestList extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setScaleX(1.2f);
-                view.setScaleY(1.2f);
+                Menu.click_sound.start();
+                view.setScaleX(1.1f);
+                view.setScaleY(1.1f);
                 Handler handler0 = new Handler();
                 handler0.postDelayed(new Runnable() {
                     public void run() {
-                        //
+                        //Se desactiva el clickable
                         contenedor.findViewWithTag(tag).setClickable(false);
                         selectorMision(tipo);
                         ad.dismiss();
@@ -356,8 +372,9 @@ public class QuestList extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                view.setScaleX(1.2f);
-                view.setScaleY(1.2f);
+                Menu.click_sound.start();
+                view.setScaleX(1.1f);
+                view.setScaleY(1.1f);
                 Handler handler0 = new Handler();
                 handler0.postDelayed(new Runnable() {
                     public void run() {

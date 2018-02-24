@@ -1,19 +1,25 @@
 En este documento se mencionan las fuentes de los recursos no hechos por mi:
--app icon
-Icon made by https://www.flaticon.com/authors/roundicons from www.flaticon.com
+
+-app icon: https://www.flaticon.com/free-icon/pyramids_190471
 
 -layout_opening
 fondo: https://www.zedge.net/wallpaper/0e57514c-cd61-3f0a-8b6b-216dfd8862f2
 tipografía: https://www.dafont.com/es/arabolical.font
 musica: https://www.youtube.com/watch?v=gXDyiMqs77A
 
--layout_quest_list:
+-layout_quest_list
+escarabajo: https://www.flaticon.com/free-icon/scarab_119411
 musica: https://www.youtube.com/watch?v=Yz0ZHjnsZDE
 jeroglifico: http://blogs.elpais.com/.a/6a00d8341bfb1653ef017d3e036aad970c-pi
 papiro: https://www.roblox.com/library/158013711/1209752019-old-paper-papyrus-scroll-stock
-iconos: https://www.freepik.es/vector-gratis/elementos-egipcios-coloridos_808772.htm Designed by Freepik
+iconos: https://www.freepik.es/vector-gratis/elementos-egipcios-coloridos_808772.htm
 
 -custom dialog
 tick: http://icongal.com/gallery/icon/73384/128/accept_yes_ok_check_tick_no_hospital
-papiro: http://wiki.metin2.es/index.php/Plantilla:Esbozo
+papiro: https://www.roblox.com/library/158013711/1209752019-old-paper-papyrus-scroll-stock
 error: http://icongal.com/gallery/icon/54829/128/actions_dialog_close
+
+-layout_menu
+click: http://soundbible.com/1950-Button-Push.html
+musica: https://www.youtube.com/watch?v=ldP1QDcA--g
+fondo: http://blogs.elpais.com/.a/6a00d8341bfb1653ef017d3e036aad970c-pi

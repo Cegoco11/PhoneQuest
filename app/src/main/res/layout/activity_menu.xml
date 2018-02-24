@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.cegoc.phonequest.Menu"
+    android:background="@drawable/menu_bg"
+    android:paddingTop="120dp"
+    >
+
+    <Button
+        android:id="@+id/irMisiones"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/custom_button"
+        android:layout_width="220dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/arabolic"
+        android:onClick="goToMenu"
+        android:text="Misiones"
+        android:textAlignment="center"
+        android:textColor="#422811"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/irEstadisticas"
+        android:background="@drawable/custom_button"
+        android:layout_width="205dp"
+        android:layout_height="55dp"
+        android:layout_below="@id/irMisiones"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/arabolic"
+        android:onClick="goToEstadisticas"
+        android:text="Estadisticas"
+        android:textAlignment="center"
+        android:textColor="#422811"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/irCreditos"
+        android:background="@drawable/custom_button"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/irEstadisticas"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/arabolic"
+        android:onClick="goToCreditos"
+        android:text="Creditos"
+        android:textAlignment="center"
+        android:textColor="#422811"
+        android:textStyle="bold" />
+
+</RelativeLayout>
