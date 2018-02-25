@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 /**
@@ -157,6 +159,8 @@ public class QuestList extends AppCompatActivity {
             aux_img2.setVisibility(View.INVISIBLE);
             aux_img2.setImageResource(R.drawable.scarab);
             aux_img2.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
+            //Le pongo un tag que se llamará "scarab"+posicion del logro actual en el array
+            aux_img2.setTag("scarab"+i);
 
             aux_text=new TextView(this);
             aux_text.setLayoutParams(params_text);
@@ -175,7 +179,7 @@ public class QuestList extends AppCompatActivity {
             aux_linear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Gracias a la id que puse en el tag puedo acceder a cada boton
+                    // Gracias a la id del logro que puse en el tag puedo acceder a cada boton
                     int id=(int)view.getTag();
                     // Recorro todos los logros
                     for(Logro o : logros){
@@ -385,5 +389,27 @@ public class QuestList extends AppCompatActivity {
         });
         ad.create();
         ad.show();
+    }
+
+    /**
+     * Metodo que ordena por estado y luego por id (false -> true && 0 -> n)
+     */
+    public void sortByIdAndState(){
+        Collections.sort(logros, new Comparator<Logro>() {
+
+            public int compare(Logro o1, Logro o2) {
+
+                Boolean state1 = o1.getEstado();
+                Boolean state2 = o2.getEstado();
+                int sComp = state1.compareTo(state2);
+
+                if (sComp != 0) {
+                    return sComp;
+                } else {
+                    Integer x1 = o1.getID_LOGRO();
+                    Integer x2 = o2.getID_LOGRO();
+                    return x1.compareTo(x2);
+                }
+            }});
     }
 }
