@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
@@ -53,6 +54,7 @@ public class QuestList extends AppCompatActivity {
     private MediaPlayer list_sound;
     private LinearLayout contenedor;
     private static Context context;
+    private boolean firstTime=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +66,17 @@ public class QuestList extends AppCompatActivity {
 
         this.contenedor=findViewById(R.id.linear_scroll);
 
+        // Cargo los logros, los ordeno por estado y tiempo, y genero el layout
         cargaLogros();
+        sortByIdAndState();
         creaLogrosLayout();
+
+        //ToDo Tengo que controlar si es la primera vez que se abre la aplicacion,
+        //ToDo para que se ejecute este if
+        if(firstTime){
+            reactivarLogros();
+            firstTime=false;
+        }
 
         list_sound=MediaPlayer.create(this, R.raw.quest_list_sound);
         list_sound.setLooping(true);
@@ -127,7 +138,7 @@ public class QuestList extends AppCompatActivity {
         final LinearLayout.LayoutParams params_linear=new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final LinearLayout.LayoutParams params_img=new LinearLayout.LayoutParams
-                (toDp(75), toDp(75));
+                (toDp(80), toDp(80));
         final LinearLayout.LayoutParams params_img2=new LinearLayout.LayoutParams
                 (toDp(40), toDp(40));
         params_img2.gravity= Gravity.CENTER;
@@ -146,6 +157,24 @@ public class QuestList extends AppCompatActivity {
             aux_linear.setOrientation(LinearLayout.HORIZONTAL);
             aux_linear.setLayoutParams(params_linear);
 
+            aux_linear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Gracias a la id del logro que puse en el tag puedo acceder a cada boton
+                    int id=(int)view.getTag();
+                    // Recorro todos los logros
+                    for(Logro o : logros){
+                        // Si la id del logro es igual a la del tag
+                        if(o.getID_LOGRO()==id){
+                            // Selecciona el tipo de mision y crea un dialogo
+                            Menu.click_sound.start();
+                            creaDialog("Estas seguro?", o);
+                            break;
+                        }
+                    }
+                }
+            });
+
             aux_img=new ImageView(this);
             aux_img.setLayoutParams(params_img);
             aux_img.setImageResource(logros.get(i).getImg());
@@ -153,14 +182,8 @@ public class QuestList extends AppCompatActivity {
 
             aux_img2=new ImageView(this);
             aux_img2.setLayoutParams(params_img2);
-            // Falta poner un tag a la imagen, para despues cuando se haga click
-            // buscar por tag, y hacerla visible. Con esto el usuario sabra que mision tiene activa
-            // ya que se cambiara la visibilidad de la imagen
-            aux_img2.setVisibility(View.INVISIBLE);
             aux_img2.setImageResource(R.drawable.scarab);
             aux_img2.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
-            //Le pongo un tag que se llamará "scarab"+posicion del logro actual en el array
-            aux_img2.setTag("scarab"+i);
 
             aux_text=new TextView(this);
             aux_text.setLayoutParams(params_text);
@@ -169,6 +192,23 @@ public class QuestList extends AppCompatActivity {
             aux_text.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             aux_text.setPadding(toDp(5),toDp(5),toDp(5),toDp(5));
 
+            // Si la mision esta activa(0) se ve la imagen, y se quita el clickable
+            // Si la mision es nueva (1) la imagen no se ve, y es clickable
+            // Si la mision esta completada(2) no es clickable, y el texto sale tachado
+            switch (logros.get(i).getEstado()){
+                case 0:
+                    aux_img2.setVisibility(View.VISIBLE);
+                    aux_linear.setClickable(false);
+                    break;
+                case 1:
+                    aux_img2.setVisibility(View.INVISIBLE);
+                    break;
+                case 2:
+                    aux_img2.setVisibility(View.INVISIBLE);
+                    aux_text.setPaintFlags(aux_text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    aux_linear.setClickable(false);
+            }
+
             aux_linear.addView(aux_img);
             aux_linear.addView(aux_text);
             aux_linear.addView(aux_img2);
@@ -176,27 +216,7 @@ public class QuestList extends AppCompatActivity {
             // Cojo la id del logro actual y lo asigno de tag al boton
             aux_linear.setTag(logros.get(i).getID_LOGRO());
 
-            aux_linear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Gracias a la id del logro que puse en el tag puedo acceder a cada boton
-                    int id=(int)view.getTag();
-                    // Recorro todos los logros
-                    for(Logro o : logros){
-                        int aux=o.getID_LOGRO();
-                        // Si la id del logro es igual a la del tag
-                        if(aux==id){
-                            // Selecciona el tipo de mision y crea un dialogo
-                            Menu.click_sound.start();
-                            creaDialog("Estas seguro?", o.getTipo(), view.getTag());
-                            break;
-                        }
-                    }
-                }
-            });
-
             contenedor.addView(aux_linear);
-
         }
     }
 
@@ -284,7 +304,7 @@ public class QuestList extends AppCompatActivity {
      * @param contenido texto que va a tener la notificacion
      * @param img imagen que queremos que se vea (R.drawable.nombre_de_la_imagen)
      */
-    public static void generarNotificacion(int id,String titulo, String contenido,int img){
+    public static void generarNotificacion(int id,String titulo, String contenido, int img){
         // Paso 1: creo la notificacion
         NotificationCompat.Builder prueba=new NotificationCompat.Builder(context);
         prueba.setSmallIcon(img);
@@ -309,7 +329,7 @@ public class QuestList extends AppCompatActivity {
      * 4- Cargar Movil (5%)
      * 5- Activar Bluetooth
      */
-    private void selectorMision(int num){
+    private void activarMision(int num){
         switch (num){
             case 1:
                 Toast.makeText(context, "Mision 1 activada", Toast.LENGTH_SHORT).show();
@@ -341,10 +361,9 @@ public class QuestList extends AppCompatActivity {
      * y el tipo para pasarselo al metodo 'selectorMision(int)'
      *
      * @param s texto que se vera en el dialogo
-     * @param tipo tipo de logro que queremos activar
-     * @param tag tag del linear layout que se ha clickado
+     * @param o Logro con el que estoy
      */
-    private void creaDialog(String s, final int tipo, final Object tag){
+    private void creaDialog(String s, final Logro o){
         LayoutInflater inflater = getLayoutInflater();
         View aux=inflater.inflate(R.layout.custom_dialog,null);
 
@@ -357,19 +376,31 @@ public class QuestList extends AppCompatActivity {
         ImageView btnOk=aux.findViewById(R.id.custom_dialog_btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 Menu.click_sound.start();
                 view.setScaleX(1.1f);
                 view.setScaleY(1.1f);
-                Handler handler0 = new Handler();
-                handler0.postDelayed(new Runnable() {
+
+                //Se desactiva el clickable
+                contenedor.findViewWithTag(o.getID_LOGRO()).setClickable(false);
+                // Se elige la mision segun el tipo del Logro
+                activarMision(o.getTipo());
+                // Se modifica el estado del logro
+                modificaEstado(o.getID_LOGRO(), 0);
+                // Se guarda la informacion
+                guardaLogros(logros);
+
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
                     public void run() {
-                        //Se desactiva el clickable
-                        contenedor.findViewWithTag(tag).setClickable(false);
-                        selectorMision(tipo);
+                        view.setScaleX(1.0f);
+                        view.setScaleY(1.0f);
+
+                        // Y se actualiza
+                        recreate();
                         ad.dismiss();
                     }
-                }, 200);
+                }, 80);
             }
         });
         ImageView btnCancel=aux.findViewById(R.id.custom_dialog_btnCancel);
@@ -392,24 +423,51 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
-     * Metodo que ordena por estado y luego por id (false -> true && 0 -> n)
+     * Metodo que ordena por estado y luego por fecha de creaccion
+     * de la mision (false -> true && 0 -> n)
      */
     public void sortByIdAndState(){
         Collections.sort(logros, new Comparator<Logro>() {
 
             public int compare(Logro o1, Logro o2) {
 
-                Boolean state1 = o1.getEstado();
-                Boolean state2 = o2.getEstado();
+                Integer state1 = o1.getEstado();
+                Integer state2 = o2.getEstado();
                 int sComp = state1.compareTo(state2);
 
                 if (sComp != 0) {
                     return sComp;
                 } else {
-                    Integer x1 = o1.getID_LOGRO();
-                    Integer x2 = o2.getID_LOGRO();
-                    return x1.compareTo(x2);
+                    Float f1 = o1.getTiempoCreaccion();
+                    Float f2 = o2.getTiempoCreaccion();
+                    return f1.compareTo(f2);
                 }
             }});
+    }
+
+    /**
+     * Metodo que busca un logro, segun la id que se pasa como parametro, y cambia
+     * su estado
+     *
+     * @param aux id del logro que queremos buscar
+     * @param estado a que estado quieres cambiar el logro
+     */
+    public void modificaEstado(int aux, int estado){
+        for(Logro o : logros){
+            if(o.getID_LOGRO()==aux){
+                o.setEstado(estado);
+            }
+        }
+    }
+
+    /**
+     * Activa los broadcast de los logros con estado 0
+     */
+    public void reactivarLogros(){
+        for(Logro o : logros){
+            if(o.getEstado()==0){
+                activarMision(o.getTipo());
+            }
+        }
     }
 }

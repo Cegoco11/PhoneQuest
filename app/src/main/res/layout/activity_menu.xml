@@ -10,46 +10,49 @@
 
     <Button
         android:id="@+id/irMisiones"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/custom_button"
-        android:layout_width="220dp"
-        android:layout_height="55dp"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/custom_button"
         android:fontFamily="@font/arabolic"
         android:onClick="goToMenu"
         android:text="Misiones"
         android:textAlignment="center"
         android:textColor="#422811"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/irEstadisticas"
-        android:background="@drawable/custom_button"
-        android:layout_width="205dp"
-        android:layout_height="55dp"
+        android:layout_width="260dp"
+        android:layout_height="65dp"
         android:layout_below="@id/irMisiones"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/custom_button"
         android:fontFamily="@font/arabolic"
         android:onClick="goToEstadisticas"
         android:text="Estadisticas"
         android:textAlignment="center"
         android:textColor="#422811"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/irCreditos"
-        android:background="@drawable/custom_button"
-        android:layout_width="190dp"
-        android:layout_height="50dp"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
         android:layout_below="@id/irEstadisticas"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_button"
         android:fontFamily="@font/arabolic"
         android:onClick="goToCreditos"
         android:text="Creditos"
         android:textAlignment="center"
         android:textColor="#422811"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
 </RelativeLayout>

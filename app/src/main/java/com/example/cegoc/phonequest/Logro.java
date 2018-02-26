@@ -14,12 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Logro implements Serializable{
 
     private static final AtomicInteger count = new AtomicInteger(0);
+    private final float tiempoCreaccion;
     private final int ID_LOGRO;
     private final int tipoLogro;
     private int img;
     private String texto;
-    private boolean estado;
-
+    private int estado; //0 Mision activada; 1 Mision nueva; 2 Mision completada
 
     /**
      *  Constructor de la clase
@@ -32,7 +32,8 @@ public class Logro implements Serializable{
      *   5- Activar Bluetooth
      */
     public Logro(int tipo){
-        this.estado=false;
+        this.tiempoCreaccion= System.currentTimeMillis();
+        this.estado=1;
         this.tipoLogro=tipo;
         this.ID_LOGRO=count.incrementAndGet();
         switch (tipo){
@@ -62,24 +63,28 @@ public class Logro implements Serializable{
         }
     }
 
-    public int getImg() {
-        return img;
-    }
-
     public String getTexto() {
         return texto;
     }
 
-    public void setComplete(){
-        this.estado=true;
+    public int getImg() {
+        return img;
+    }
+
+    public void setEstado(int s){
+        this.estado=s;
     }
 
     public int getTipo(){
         return tipoLogro;
     }
 
-    public boolean getEstado(){
+    public int getEstado(){
         return estado;
+    }
+
+    public float getTiempoCreaccion(){
+        return tiempoCreaccion;
     }
 
     public int getID_LOGRO(){

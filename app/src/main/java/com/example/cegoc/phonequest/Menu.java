@@ -2,6 +2,7 @@ package com.example.cegoc.phonequest;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -45,12 +46,21 @@ public class Menu extends AppCompatActivity {
      *
      * @param v
      */
-    public void goToMenu(View v){
+    public void goToMenu(final View v){
         click_sound.start();
         v.setScaleX(1.1f);
         v.setScaleY(1.1f);
-        Intent i= new Intent(Menu.this, QuestList.class);
-        startActivity(i);
+        Handler handler0 = new Handler();
+        handler0.postDelayed(new Runnable() {
+            public void run() {
+                //Se desactiva el clickable
+                v.setScaleX(1.0f);
+                v.setScaleY(1.0f);
+
+                Intent i= new Intent(Menu.this, QuestList.class);
+                startActivity(i);
+            }
+        }, 80);
     }
 
     /**
@@ -58,12 +68,21 @@ public class Menu extends AppCompatActivity {
      *
      * @param v
      */
-    public void goToEstadisticas(View v){
+    public void goToEstadisticas(final View v){
         click_sound.start();
         v.setScaleX(1.1f);
         v.setScaleY(1.1f);
-//        Intent i= new Intent(Menu.this, QuestList.class);
-//        startActivity(i);
+        Handler handler0 = new Handler();
+        handler0.postDelayed(new Runnable() {
+            public void run() {
+                //Se desactiva el clickable
+                v.setScaleX(1.0f);
+                v.setScaleY(1.0f);
+
+                Intent i= new Intent(Menu.this, QuestList.class);
+                startActivity(i);
+            }
+        }, 80);
     }
 
     /**
@@ -71,11 +90,20 @@ public class Menu extends AppCompatActivity {
      *
      * @param v
      */
-    public void goToCreditos(View v){
+    public void goToCreditos(final View v){
         click_sound.start();
         v.setScaleX(1.1f);
         v.setScaleY(1.1f);
-//        Intent i= new Intent(Menu.this, QuestList.class);
-//        startActivity(i);
+        Handler handler0 = new Handler();
+        handler0.postDelayed(new Runnable() {
+            public void run() {
+                //Se desactiva el clickable
+                v.setScaleX(1.0f);
+                v.setScaleY(1.0f);
+
+                Intent i= new Intent(Menu.this, QuestList.class);
+                startActivity(i);
+            }
+        }, 80);
     }
 }
