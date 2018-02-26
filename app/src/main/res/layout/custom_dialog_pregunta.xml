@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:background="@drawable/custom_dialog">
 
     <TextView
@@ -32,17 +33,17 @@
             android:id="@+id/custom_dialog_btnCancel"
             android:padding="1dp"
             android:layout_width="60dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/error_circle"/>
+            android:src="@drawable/neg"/>
 
         <ImageView
             android:id="@+id/custom_dialog_btnOk"
             android:padding="3dp"
             android:layout_width="60dp"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_marginStart="20dp"
-            android:src="@drawable/tick_circle"/>
+            android:src="@drawable/pos"/>
 
     </LinearLayout>
 

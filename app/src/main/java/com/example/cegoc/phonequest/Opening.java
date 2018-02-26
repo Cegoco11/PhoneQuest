@@ -2,6 +2,7 @@ package com.example.cegoc.phonequest;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,10 @@ public class Opening extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_opening);
         getSupportActionBar().hide();
+
+        // Cada vez que se abre la app se cambia el valor de firstTime a true
+        SharedPreferences settings = getSharedPreferences("config", 0);
+        settings.edit().putBoolean("firstTime", true).apply();
 
         creaFichero();
 

@@ -14,16 +14,17 @@ import android.util.Log;
  */
 public class BatteryChangedListener extends BroadcastReceiver {
 
+    public static final int PORCENTAJE_DESCARGA=2;
+    public static final int PORCENTAJE_CARGA=4;
+
     private int level;
     private boolean control;
     private boolean eleccion;
-    private int cantidad;
 
-    public BatteryChangedListener(boolean b, int c){
+    public BatteryChangedListener(boolean b){
         this.level=-5;
         this.control=true;
         this.eleccion=b;
-        this.cantidad=c-1;
     }
 
     public void setLevel(int level) {
@@ -47,19 +48,19 @@ public class BatteryChangedListener extends BroadcastReceiver {
 
         if (control){
             if(eleccion){
-                Log.i("CARGAR","level: "+level+"; aux: "+(aux+cantidad));
-               if (level < aux-cantidad) {
+                Log.i("CARGAR","level: "+level+"; aux: "+(aux+(PORCENTAJE_CARGA-1)));
+               if (level < aux-(PORCENTAJE_CARGA-1)) {
                    Log.i("BATTERYLISTENER","CARGAR LOGRO COMPLETADO");
                     QuestList.generarNotificacion(2, "Bateria",
-                            "Se ha cargado un "+cantidad+"%", R.drawable.ic_cascos);
+                            "Se ha cargado un "+(PORCENTAJE_CARGA-1)+"%", R.drawable.ic_cascos);
                     setControl(false);
                     QuestList.usarCargarMovil(false);
                 }
             } else{
-                if (level > aux+cantidad) {
+                if (level > aux+(PORCENTAJE_DESCARGA-1)) {
                     Log.i("BATTERYLISTENER","DESCARGAR LOGRO COMPLETADO");
                     QuestList.generarNotificacion(3, "Bateria",
-                            "Se ha descargado un "+cantidad+"%", R.drawable.ic_cascos);
+                            "Se ha descargado un "+(PORCENTAJE_DESCARGA-1)+"%", R.drawable.ic_cascos);
                     QuestList.usarDescargarMovil(false);
                     setControl(false);
                 }

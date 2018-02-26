@@ -7,10 +7,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,9 +46,9 @@ public class QuestList extends AppCompatActivity {
     private static final HeadphonesChangeListener broadCast_ConectarCascos=
             new HeadphonesChangeListener();
     private static final BatteryChangedListener broadCast_DescargarMovil=
-            new BatteryChangedListener(false, 2);
+            new BatteryChangedListener(false);
     private static final BatteryChangedListener broadCast_CargarMovil=
-            new BatteryChangedListener(true, 5);
+            new BatteryChangedListener(true);
     private static final BluetoothChangeListener broadCast_ConectarBlue=
             new BluetoothChangeListener();
 
@@ -54,7 +56,6 @@ public class QuestList extends AppCompatActivity {
     private MediaPlayer list_sound;
     private LinearLayout contenedor;
     private static Context context;
-    private boolean firstTime=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,19 +69,20 @@ public class QuestList extends AppCompatActivity {
 
         // Cargo los logros, los ordeno por estado y tiempo, y genero el layout
         cargaLogros();
-        sortByIdAndState();
+        sortStateAndTime();
         creaLogrosLayout();
 
-        //ToDo Tengo que controlar si es la primera vez que se abre la aplicacion,
-        //ToDo para que se ejecute este if
-        if(firstTime){
+        // Si se ejecuta la aplicacion despues de haberse cerrado se ejecuta esto
+        SharedPreferences settings = getSharedPreferences("config", 0);
+        if (settings.getBoolean("firstTime", true)) {
             reactivarLogros();
-            firstTime=false;
+            settings.edit().putBoolean("firstTime", false).apply();
         }
 
         list_sound=MediaPlayer.create(this, R.raw.quest_list_sound);
         list_sound.setLooping(true);
         list_sound.start();
+
     }
 
     @Override
@@ -168,7 +170,7 @@ public class QuestList extends AppCompatActivity {
                         if(o.getID_LOGRO()==id){
                             // Selecciona el tipo de mision y crea un dialogo
                             Menu.click_sound.start();
-                            creaDialog("Estas seguro?", o);
+                            creaCustomDialog_pregunta(o);
                             break;
                         }
                     }
@@ -340,12 +342,12 @@ public class QuestList extends AppCompatActivity {
                 usarConectarUsb(true);
                 break;
             case 3:
-                Toast.makeText(context, "Mision 3 activada", Toast.LENGTH_SHORT).show();
                 usarDescargarMovil(true);
+                Toast.makeText(context, "Mision 3 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 4:
-                Toast.makeText(context, "Mision 4 activada", Toast.LENGTH_SHORT).show();
                 usarCargarMovil(true);
+                Toast.makeText(context, "Mision 4 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 5:
                 Toast.makeText(context, "Mision 5 activada", Toast.LENGTH_SHORT).show();
@@ -357,22 +359,59 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
+     * Comprueba si se puede usar la mision de descargar el movil
+     *
+     * @return retorno true si se puede, false si no
+     */
+    public boolean sePuedeDescargar(){
+        boolean retorno;
+        // Recojo el nivel actual de bateria
+        Intent datosBateria=new Intent(Intent.ACTION_BATTERY_CHANGED);
+        int level=datosBateria.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        // Si el nivel es mayor de lo que tiene que descargarse
+        if(level>BatteryChangedListener.PORCENTAJE_DESCARGA){
+            retorno=true;
+        } else{
+            retorno=false;
+        }
+        return retorno;
+    }
+
+    /**
+     * Comprueba si se puede usar la mision de cargar el movil
+     *
+     * @return retorno true si se puede, false si no
+     */
+    public boolean sePuedeCargar(){
+        boolean retorno;
+        // Recojo el nivel actual de bateria
+        Intent datosBateria=new Intent(Intent.ACTION_BATTERY_CHANGED);
+        int level=datosBateria.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+        // Si el nivel no es mayor que 100-PORCENTAJE_CARGA
+        if(!(level>(100-BatteryChangedListener.PORCENTAJE_CARGA))){
+            retorno=true;
+        } else{
+            retorno=false;
+        }
+        return retorno;
+    }
+
+    /**
      * Crea un dialogo personalizado al que se le pasa como parametro el texto
      * y el tipo para pasarselo al metodo 'selectorMision(int)'
      *
-     * @param s texto que se vera en el dialogo
      * @param o Logro con el que estoy
      */
-    private void creaDialog(String s, final Logro o){
+    private void creaCustomDialog_pregunta(final Logro o){
         LayoutInflater inflater = getLayoutInflater();
-        View aux=inflater.inflate(R.layout.custom_dialog,null);
+        View aux=inflater.inflate(R.layout.custom_dialog_pregunta,null);
 
         final Dialog ad=new Dialog(QuestList.this);
         ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         ad.setContentView(aux);
 
         TextView texto=aux.findViewById(R.id.custom_dialog_text);
-        texto.setText(s);
+        texto.setText("Estas seguro?");
         ImageView btnOk=aux.findViewById(R.id.custom_dialog_btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,43 +420,84 @@ public class QuestList extends AppCompatActivity {
                 view.setScaleX(1.1f);
                 view.setScaleY(1.1f);
 
-                //Se desactiva el clickable
-                contenedor.findViewWithTag(o.getID_LOGRO()).setClickable(false);
-                // Se elige la mision segun el tipo del Logro
-                activarMision(o.getTipo());
-                // Se modifica el estado del logro
-                modificaEstado(o.getID_LOGRO(), 0);
-                // Se guarda la informacion
-                guardaLogros(logros);
-
-                Handler handler1 = new Handler();
-                handler1.postDelayed(new Runnable() {
+                Handler handler0 = new Handler();
+                handler0.postDelayed(new Runnable() {
                     public void run() {
                         view.setScaleX(1.0f);
                         view.setScaleY(1.0f);
-
-                        // Y se actualiza
-                        recreate();
-                        ad.dismiss();
                     }
-                }, 80);
+                }, 90);
+
+                int tipoAux=o.getTipo();
+                switch (tipoAux){
+                    case 3:
+                        if(sePuedeCargar()){
+                            clickParaFila(tipoAux, o);
+                        } else{
+                            ad.dismiss();
+                            creaCustomDialog_error("No dispones de los requisitos " +
+                                    "para completar esta mision");
+                        }
+                        break;
+                    case 4:
+                        if(sePuedeDescargar()){
+                            clickParaFila(tipoAux, o);
+                        } else{
+                            ad.dismiss();
+                            creaCustomDialog_error("No dispones de los requisitos " +
+                                    "para completar esta mision");
+                        }
+                        break;
+                    // Para todos los demas casos se hace con normalidad
+                    default:
+                        clickParaFila(tipoAux, o);
+                }
             }
         });
         ImageView btnCancel=aux.findViewById(R.id.custom_dialog_btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 Menu.click_sound.start();
                 view.setScaleX(1.1f);
                 view.setScaleY(1.1f);
                 Handler handler0 = new Handler();
                 handler0.postDelayed(new Runnable() {
                     public void run() {
+                        view.setScaleX(1.0f);
+                        view.setScaleY(1.0f);
+
+                    }
+                }, 80);
+
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    public void run() {
                         ad.dismiss();
                     }
-                }, 200);
+                }, 100);
             }
         });
+        ad.create();
+        ad.show();
+    }
+
+    /**
+     * Crea un dialogo personalizado de tipo error
+     *
+     * @param s texto del dialogo
+     */
+    private void creaCustomDialog_error(String s){
+        LayoutInflater inflater = getLayoutInflater();
+        View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+
+        final Dialog ad=new Dialog(QuestList.this);
+        ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        ad.setContentView(aux);
+
+        TextView texto=aux.findViewById(R.id.custom_dialog_text);
+        texto.setText(s);
+
         ad.create();
         ad.show();
     }
@@ -426,7 +506,7 @@ public class QuestList extends AppCompatActivity {
      * Metodo que ordena por estado y luego por fecha de creaccion
      * de la mision (false -> true && 0 -> n)
      */
-    public void sortByIdAndState(){
+    public void sortStateAndTime(){
         Collections.sort(logros, new Comparator<Logro>() {
 
             public int compare(Logro o1, Logro o2) {
@@ -469,5 +549,36 @@ public class QuestList extends AppCompatActivity {
                 activarMision(o.getTipo());
             }
         }
+    }
+
+    /**
+     * Busca un tipo de logro en el array de logros
+     *
+     * @param tipo tipo de logro que buscamos
+     * @return true si encuentra el tipo, false si no
+     */
+    public boolean existeLogro(int tipo){
+        for(Logro o : logros){
+            if(o.getTipo()==tipo){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Metodo auxiliar que elige que mision se activa,
+     * desactiva el clickable, modifica el estado del logro, y
+     * guarda la modificacion
+     *
+     * @param tipoAux tipo de mision
+     * @param o logro a modificar
+     */
+    private void clickParaFila(int tipoAux, Logro o){
+        activarMision(tipoAux);
+        contenedor.findViewWithTag(o.getID_LOGRO()).setClickable(false);
+        modificaEstado(o.getID_LOGRO(), 0);
+        guardaLogros(logros);
+        recreate();
     }
 }

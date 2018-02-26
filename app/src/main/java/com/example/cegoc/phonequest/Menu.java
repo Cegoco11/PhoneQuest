@@ -1,11 +1,15 @@
 package com.example.cegoc.phonequest;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 public class Menu extends AppCompatActivity {
 
@@ -79,8 +83,7 @@ public class Menu extends AppCompatActivity {
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
 
-                Intent i= new Intent(Menu.this, QuestList.class);
-                startActivity(i);
+                creaCustomDialog_error("No disponible por el momento");
             }
         }, 80);
     }
@@ -101,9 +104,28 @@ public class Menu extends AppCompatActivity {
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
 
-                Intent i= new Intent(Menu.this, QuestList.class);
-                startActivity(i);
+                creaCustomDialog_error("No disponible por el momento");
             }
         }, 80);
+    }
+
+    /**
+     * Crea un dialogo personalizado de tipo error
+     *
+     * @param s texto del dialogo
+     */
+    private void creaCustomDialog_error(String s){
+        LayoutInflater inflater = getLayoutInflater();
+        View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+
+        final Dialog ad=new Dialog(Menu.this);
+        ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        ad.setContentView(aux);
+
+        TextView texto=aux.findViewById(R.id.custom_dialog_text);
+        texto.setText(s);
+
+        ad.create();
+        ad.show();
     }
 }
