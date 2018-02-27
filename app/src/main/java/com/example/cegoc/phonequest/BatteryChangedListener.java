@@ -40,8 +40,8 @@ public class BatteryChangedListener extends BroadcastReceiver {
         this.level = level;
     }
 
-    public void setControl(boolean control) {
-        this.control = control;
+    public void setControl() {
+        this.control = false;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BatteryChangedListener extends BroadcastReceiver {
                    Log.i("BATTERYLISTENER","CARGAR LOGRO COMPLETADO");
                     QuestList.generarNotificacion(2, "Bateria",
                             "Se ha cargado un "+(PORCENTAJE_CARGA-1)+"%", R.drawable.ic_cascos);
-                    setControl(false);
+                    setControl();
                     QuestList.usarCargarMovil(false, getId_logro());
                 }
             } else{
@@ -71,7 +71,7 @@ public class BatteryChangedListener extends BroadcastReceiver {
                     QuestList.generarNotificacion(3, "Bateria",
                             "Se ha descargado un "+(PORCENTAJE_DESCARGA-1)+"%", R.drawable.ic_cascos);
                     QuestList.usarDescargarMovil(false, getId_logro());
-                    setControl(false);
+                    setControl();
                 }
             }
         }

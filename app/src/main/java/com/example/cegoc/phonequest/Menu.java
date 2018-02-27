@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,7 +19,11 @@ public class Menu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        getSupportActionBar().hide();
+
+        // Si existe la barra de titulo la oculta
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().hide();
+        }
 
         menu_sound=MediaPlayer.create(this, R.raw.menu_sound);
         menu_sound.setLooping(true);
@@ -48,7 +51,7 @@ public class Menu extends AppCompatActivity {
     /**
      *  Metodo para cambiar a la actividad de QuestList.class
      *
-     * @param v
+     * @param v Vista que lo lanza
      */
     public void goToMenu(final View v){
         click_sound.start();
@@ -70,7 +73,7 @@ public class Menu extends AppCompatActivity {
     /**
      *  Metodo para cambiar a la actividad de Estadisticas.class
      *
-     * @param v
+     * @param v Vista que lo lanza
      */
     public void goToEstadisticas(final View v){
         click_sound.start();
@@ -83,7 +86,7 @@ public class Menu extends AppCompatActivity {
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
 
-                creaCustomDialog_error("No disponible por el momento");
+                creaCustomDialog_error();
             }
         }, 80);
     }
@@ -91,7 +94,7 @@ public class Menu extends AppCompatActivity {
     /**
      *  Metodo para cambiar a la actividad de Creditos.class
      *
-     * @param v
+     * @param v Vista que lo lanza
      */
     public void goToCreditos(final View v){
         click_sound.start();
@@ -104,26 +107,25 @@ public class Menu extends AppCompatActivity {
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
 
-                creaCustomDialog_error("No disponible por el momento");
+                creaCustomDialog_error();
             }
         }, 80);
     }
 
     /**
      * Crea un dialogo personalizado de tipo error
-     *
-     * @param s texto del dialogo
      */
-    private void creaCustomDialog_error(String s){
-        LayoutInflater inflater = getLayoutInflater();
-        View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+    private void creaCustomDialog_error(){
+        //LayoutInflater inflater = getLayoutInflater();
+        //View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+        View aux=View.inflate(this, R.layout.custom_dialog_error, null);
 
         final Dialog ad=new Dialog(Menu.this);
         ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         ad.setContentView(aux);
 
-        TextView texto=aux.findViewById(R.id.custom_dialog_text);
-        texto.setText(s);
+        TextView texto=aux.findViewById(R.id.custom_dialog_text2);
+        texto.setText("No disponible por el momento");
 
         ad.create();
         ad.show();

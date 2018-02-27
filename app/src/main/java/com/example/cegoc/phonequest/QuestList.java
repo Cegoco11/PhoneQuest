@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -66,7 +65,11 @@ public class QuestList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quest_list);
-        getSupportActionBar().hide();
+
+        // Si existe la barra de titulo la oculta
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().hide();
+        }
 
         context=getApplicationContext();
         contextActivity=this;
@@ -111,7 +114,7 @@ public class QuestList extends AppCompatActivity {
      */
     public static void guardaLogros(ArrayList<Logro> lista){
         FileOutputStream fos;
-        ObjectOutputStream out = null;
+        ObjectOutputStream out;
         try {
             fos = context.openFileOutput("file_logros", Context.MODE_PRIVATE);
             out = new ObjectOutputStream(fos);
@@ -126,6 +129,7 @@ public class QuestList extends AppCompatActivity {
     /**
      * Carga los datos del archivo file_logros en la variable logros
      */
+    @SuppressWarnings("unchecked")
     public void cargaLogros(){
         try {
             FileInputStream fis = openFileInput("file_logros");
@@ -170,7 +174,7 @@ public class QuestList extends AppCompatActivity {
                 public void onClick(View view) {
                     // Gracias a la id del logro que puse en el tag puedo acceder a cada boton
                     int id=(int)view.getTag();
-                    // Recorro todos los logros
+                    // Recorro todos los logros--
                     for(Logro o : logros){
                         // Si la id del logro es igual a la del tag
                         if(o.getID_LOGRO()==id){
@@ -335,6 +339,7 @@ public class QuestList extends AppCompatActivity {
      * @param contenido texto que va a tener la notificacion
      * @param img imagen que queremos que se vea (R.drawable.nombre_de_la_imagen)
      */
+    //ToDo Cambiar el deprecated
     public static void generarNotificacion(int id,String titulo, String contenido, int img){
         // Paso 1: creo la notificacion
         NotificationCompat.Builder prueba=new NotificationCompat.Builder(context);
@@ -406,17 +411,11 @@ public class QuestList extends AppCompatActivity {
      * @return retorno true si se puede, false si no
      */
     public boolean sePuedeCargar(){
-        boolean retorno;
         // Recojo el nivel actual de bateria
         Intent datosBateria=new Intent(Intent.ACTION_BATTERY_CHANGED);
         int level=datosBateria.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
         // Si el nivel no es mayor que 100-PORCENTAJE_CARGA
-        if(!(level>(100-BatteryChangedListener.PORCENTAJE_CARGA))){
-            retorno=true;
-        } else{
-            retorno=false;
-        }
-        return retorno;
+        return !(level>(100-BatteryChangedListener.PORCENTAJE_CARGA));
     }
 
     /**
@@ -426,14 +425,15 @@ public class QuestList extends AppCompatActivity {
      * @param o Logro con el que estoy
      */
     private void creaCustomDialog_pregunta(final Logro o){
-        LayoutInflater inflater = getLayoutInflater();
-        View aux=inflater.inflate(R.layout.custom_dialog_pregunta,null);
+        //LayoutInflater inflater = getLayoutInflater();
+        //View aux=inflater.inflate(R.layout.custom_dialog_pregunta,null);
+        View aux=View.inflate(this, R.layout.custom_dialog_pregunta, null);
 
         final Dialog ad=new Dialog(QuestList.this);
         ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         ad.setContentView(aux);
 
-        TextView texto=aux.findViewById(R.id.custom_dialog_text);
+        TextView texto=aux.findViewById(R.id.custom_dialog_text1);
         texto.setText("Estas seguro?");
         ImageView btnOk=aux.findViewById(R.id.custom_dialog_btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
@@ -511,14 +511,20 @@ public class QuestList extends AppCompatActivity {
      * @param s texto del dialogo
      */
     private void creaCustomDialog_error(String s){
-        LayoutInflater inflater = getLayoutInflater();
-        View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+        //LayoutInflater inflater = getLayoutInflater();
+        //View.inflate(context, R.layout.custom_dialog_error, null);
+        //View aux=inflater.inflate(R.layout.custom_dialog_error,null);
+        View aux=View.inflate(context, R.layout.custom_dialog_error, null);
 
         final Dialog ad=new Dialog(QuestList.this);
-        ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        if(ad.getWindow()!=null){
+            ad.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
         ad.setContentView(aux);
 
-        TextView texto=aux.findViewById(R.id.custom_dialog_text);
+        TextView texto=aux.findViewById(R.id.custom_dialog_text2);
+        final Typeface tf=Typeface.createFromAsset(getAssets(), "arabolic.TTF");
+        texto.setTypeface(tf);
         texto.setText(s);
 
         ad.create();

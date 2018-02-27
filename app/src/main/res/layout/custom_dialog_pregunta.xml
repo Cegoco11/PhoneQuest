@@ -8,7 +8,7 @@
     android:background="@drawable/custom_dialog">
 
     <TextView
-        android:id="@+id/custom_dialog_text"
+        android:id="@+id/custom_dialog_text1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="45dp"
