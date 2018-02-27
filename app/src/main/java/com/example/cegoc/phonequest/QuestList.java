@@ -546,6 +546,25 @@ public class QuestList extends AppCompatActivity {
     public void reactivarLogros(){
         for(Logro o : logros){
             if(o.getEstado()==0){
+                // Gestiono si realmente se pueden cumplir los logros antes de activarlos
+                switch(o.getEstado()){
+                    case 3:
+                        // Si no se puede, modifico el estado, lo guardo y actualizo
+                        if(!sePuedeCargar()){
+                            modificaEstado(o.getID_LOGRO(),0);
+                            guardaLogros(logros);
+                            recreate();
+                        }
+                        break;
+                    case 4:
+                        // Si no se puede, modifico el estado, lo guardo y actualizo
+                        if(!sePuedeDescargar()){
+                            modificaEstado(o.getID_LOGRO(),0);
+                            guardaLogros(logros);
+                            recreate();
+                        }
+                        break;
+                }
                 activarMision(o.getTipo());
             }
         }
