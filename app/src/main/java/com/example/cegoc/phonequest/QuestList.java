@@ -1,5 +1,6 @@
 package com.example.cegoc.phonequest;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,9 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.BatteryManager;
 import android.os.Handler;
@@ -56,6 +60,7 @@ public class QuestList extends AppCompatActivity {
     private MediaPlayer list_sound;
     private LinearLayout contenedor;
     private static Context context;
+    private static Activity contextActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,7 @@ public class QuestList extends AppCompatActivity {
         getSupportActionBar().hide();
 
         context=getApplicationContext();
+        contextActivity=this;
 
         this.contenedor=findViewById(R.id.linear_scroll);
 
@@ -103,11 +109,11 @@ public class QuestList extends AppCompatActivity {
      *
      * @param lista logros a guardar
      */
-    public void guardaLogros(ArrayList<Logro> lista){
+    public static void guardaLogros(ArrayList<Logro> lista){
         FileOutputStream fos;
         ObjectOutputStream out = null;
         try {
-            fos = openFileOutput("file_logros", Context.MODE_PRIVATE);
+            fos = context.openFileOutput("file_logros", Context.MODE_PRIVATE);
             out = new ObjectOutputStream(fos);
             out.writeObject(lista);
             out.close();
@@ -124,7 +130,7 @@ public class QuestList extends AppCompatActivity {
         try {
             FileInputStream fis = openFileInput("file_logros");
             ObjectInputStream in = new ObjectInputStream(fis);
-            this.logros = (ArrayList<Logro>) in.readObject();
+            logros = (ArrayList<Logro>) in.readObject();
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,6 +215,7 @@ public class QuestList extends AppCompatActivity {
                     aux_img2.setVisibility(View.INVISIBLE);
                     aux_text.setPaintFlags(aux_text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     aux_linear.setClickable(false);
+                    convertToGrayscale(aux_img.getDrawable());
             }
 
             aux_linear.addView(aux_img);
@@ -234,15 +241,29 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
+     * Metodo que convierte una imagen a escala de grises
+     *
+     * @param img Imagen a convertir
+     */
+    private void convertToGrayscale(Drawable img){
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        img.setColorFilter(filter);
+    }
+
+    /**
      * Activa el broadcast de descargar el movil un 2%
      *
      * @param estado true para activar, false para detener
      */
-    public static void usarDescargarMovil(boolean estado){
+    public static void usarDescargarMovil(boolean estado, int id){
         if(estado){
             context.registerReceiver(broadCast_DescargarMovil, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            broadCast_DescargarMovil.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_DescargarMovil);
+            completaMisionDescarga(contextActivity);
         }
     }
 
@@ -251,11 +272,13 @@ public class QuestList extends AppCompatActivity {
      *
      * @param estado true para activar, false para detener
      */
-    public static void usarCargarMovil(boolean estado){
+    public static void usarCargarMovil(boolean estado, int id){
         if(estado){
             context.registerReceiver(broadCast_CargarMovil, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+            broadCast_CargarMovil.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_CargarMovil);
+            completaMisionCarga(contextActivity);
         }
     }
 
@@ -264,11 +287,13 @@ public class QuestList extends AppCompatActivity {
      *
      * @param estado true para activar, false para detener
      */
-    public static void usarConectarCascos(boolean estado){
+    public static void usarConectarCascos(boolean estado, int id){
         if(estado){
             context.registerReceiver(broadCast_ConectarCascos, new IntentFilter(Intent.ACTION_HEADSET_PLUG));
+            broadCast_ConectarCascos.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarCascos);
+            completaMisionCascos(contextActivity);
         }
     }
 
@@ -277,11 +302,13 @@ public class QuestList extends AppCompatActivity {
      *
      * @param estado true para activar, false para detener
      */
-    public static void usarConectarUsb(boolean estado){
+    public static void usarConectarUsb(boolean estado, int id){
         if(estado){
             context.registerReceiver(broadCast_ConectarUsb, new IntentFilter("android.hardware.usb.action.USB_STATE"));
+            broadCast_ConectarUsb.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarUsb);
+            completaMisionUSB(contextActivity);
         }
     }
 
@@ -290,11 +317,13 @@ public class QuestList extends AppCompatActivity {
      *
      * @param estado true para activar, false para detener
      */
-    public static void usarConectarBluetooth(boolean estado){
+    public static void usarConectarBluetooth(boolean estado, int id){
         if(estado){
             context.registerReceiver(broadCast_ConectarBlue, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+            broadCast_ConectarBlue.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarBlue);
+            completaMisionBlue(contextActivity);
         }
     }
 
@@ -331,27 +360,27 @@ public class QuestList extends AppCompatActivity {
      * 4- Cargar Movil (5%)
      * 5- Activar Bluetooth
      */
-    private void activarMision(int num){
+    private void activarMision(int num, int id){
         switch (num){
             case 1:
                 Toast.makeText(context, "Mision 1 activada", Toast.LENGTH_SHORT).show();
-                usarConectarCascos(true);
+                usarConectarCascos(true, id);
                 break;
             case 2:
                 Toast.makeText(context, "Mision 2 activada", Toast.LENGTH_SHORT).show();
-                usarConectarUsb(true);
+                usarConectarUsb(true, id);
                 break;
             case 3:
-                usarDescargarMovil(true);
+                usarDescargarMovil(true, id);
                 Toast.makeText(context, "Mision 3 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 4:
-                usarCargarMovil(true);
+                usarCargarMovil(true, id);
                 Toast.makeText(context, "Mision 4 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 5:
                 Toast.makeText(context, "Mision 5 activada", Toast.LENGTH_SHORT).show();
-                usarConectarBluetooth(true);
+                usarConectarBluetooth(true, id);
                 break;
             default:
                 Toast.makeText(context, "No funcional! WIP", Toast.LENGTH_SHORT).show();
@@ -361,20 +390,14 @@ public class QuestList extends AppCompatActivity {
     /**
      * Comprueba si se puede usar la mision de descargar el movil
      *
-     * @return retorno true si se puede, false si no
+     * @return true si se puede, false si no
      */
     public boolean sePuedeDescargar(){
-        boolean retorno;
         // Recojo el nivel actual de bateria
         Intent datosBateria=new Intent(Intent.ACTION_BATTERY_CHANGED);
         int level=datosBateria.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-        // Si el nivel es mayor de lo que tiene que descargarse
-        if(level>BatteryChangedListener.PORCENTAJE_DESCARGA){
-            retorno=true;
-        } else{
-            retorno=false;
-        }
-        return retorno;
+        // Si el nivel es mayor de lo que tiene que descargarse...
+        return level>BatteryChangedListener.PORCENTAJE_DESCARGA;
     }
 
     /**
@@ -532,7 +555,7 @@ public class QuestList extends AppCompatActivity {
      * @param aux id del logro que queremos buscar
      * @param estado a que estado quieres cambiar el logro
      */
-    public void modificaEstado(int aux, int estado){
+    public static void modificaEstado(int aux, int estado){
         for(Logro o : logros){
             if(o.getID_LOGRO()==aux){
                 o.setEstado(estado);
@@ -551,25 +574,29 @@ public class QuestList extends AppCompatActivity {
                     case 3:
                         // Si no se puede, modifico el estado, lo guardo y actualizo
                         if(!sePuedeCargar()){
-                            modificaEstado(o.getID_LOGRO(),0);
+                            modificaEstado(o.getID_LOGRO(),1);
                             guardaLogros(logros);
                             recreate();
                             creaCustomDialog_error("No tienes los requisitos para completar" +
                                     " un logro en este momento, se ha desactivado esa mision.");
+                        } else{
+                            activarMision(o.getTipo(), o.getID_LOGRO());
                         }
                         break;
                     case 4:
                         // Si no se puede, modifico el estado, lo guardo y actualizo
                         if(!sePuedeDescargar()){
-                            modificaEstado(o.getID_LOGRO(),0);
+                            modificaEstado(o.getID_LOGRO(),1);
                             guardaLogros(logros);
                             recreate();
                             creaCustomDialog_error("No tienes los requisitos para completar" +
                                     " un logro en este momento, se ha desactivado esa mision.");
+                        } else{
+                            activarMision(o.getTipo(), o.getID_LOGRO());
                         }
                         break;
                     default:
-                        activarMision(o.getTipo());
+                        activarMision(o.getTipo(), o.getID_LOGRO());
                 }
             }
         }
@@ -599,10 +626,73 @@ public class QuestList extends AppCompatActivity {
      * @param o logro a modificar
      */
     private void clickParaFila(int tipoAux, Logro o){
-        activarMision(tipoAux);
+        activarMision(tipoAux, o.getID_LOGRO());
         contenedor.findViewWithTag(o.getID_LOGRO()).setClickable(false);
         modificaEstado(o.getID_LOGRO(), 0);
         guardaLogros(logros);
         recreate();
+    }
+
+//     ToDo
+//     Modular las funciones de completar usando herencia, la clase padre heredaria de
+//     BroadcastReceiver, y las hijas de esta clase padre, que es la que contiene el
+//     atributo id y el get y set correspondientes.
+//     Al pasar como parametro al metodo podulado los hijos, buscando en el parametro un padre
+//     puedo conseguir la id, y asi modularlo, de todas formas estar atento
+//     ya que estoy diciendolo de memoria
+
+    /**
+     * Metodo que completa la mision USB
+     *
+     * @param mContext Contexto para poder utilizar el recreate()
+     */
+    public static void completaMisionUSB(Activity mContext){
+        modificaEstado(broadCast_ConectarUsb.getId_logro(),2);
+        guardaLogros(logros);
+        mContext.recreate();
+    }
+
+    /**
+     * Metodo que completa la mision de carga
+     *
+     * @param mContext Contexto para poder utilizar el recreate()
+     */
+    public static void completaMisionCarga(Activity mContext){
+        modificaEstado(broadCast_CargarMovil.getId_logro(),2);
+        guardaLogros(logros);
+        mContext.recreate();
+    }
+
+    /**
+     * Metodo que completa la mision de descarga
+     *
+     * @param mContext Contexto para poder utilizar el recreate()
+     */
+    public static void completaMisionDescarga(Activity mContext){
+        modificaEstado(broadCast_DescargarMovil.getId_logro(),2);
+        guardaLogros(logros);
+        mContext.recreate();
+    }
+
+    /**
+     * Metodo que completa la mision de activar el bluetooth
+     *
+     * @param mContext Contexto para poder utilizar el recreate()
+     */
+    public static void completaMisionBlue(Activity mContext){
+        modificaEstado(broadCast_ConectarBlue.getId_logro(),2);
+        guardaLogros(logros);
+        mContext.recreate();
+    }
+
+    /**
+     * Metodo que completa la mision de conectar los cascos
+     *
+     * @param mContext Contexto para poder utilizar el recreate()
+     */
+    public static void completaMisionCascos(Activity mContext){
+        modificaEstado(broadCast_ConectarCascos.getId_logro(),2);
+        guardaLogros(logros);
+        mContext.recreate();
     }
 }

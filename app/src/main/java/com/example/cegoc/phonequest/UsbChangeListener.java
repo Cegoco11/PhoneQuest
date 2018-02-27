@@ -12,6 +12,16 @@ import android.widget.Toast;
  */
 public class UsbChangeListener extends BroadcastReceiver {
 
+    private int id_logro;
+
+    public int getId_logro() {
+        return id_logro;
+    }
+
+    public void setId_logro(int id_logro) {
+        this.id_logro = id_logro;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -19,7 +29,7 @@ public class UsbChangeListener extends BroadcastReceiver {
             if (intent.getExtras().getBoolean("connected")) {
                 QuestList.generarNotificacion(1, "Cable USB",
                         "Has conectado el usb", R.drawable.ic_cascos);
-                QuestList.usarConectarUsb(false);
+                QuestList.usarConectarUsb(false, getId_logro());
             }
         }
     }

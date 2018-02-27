@@ -14,6 +14,16 @@ import android.util.Log;
 
 public class BluetoothChangeListener extends BroadcastReceiver{
 
+    private int id_logro;
+
+    public int getId_logro() {
+        return id_logro;
+    }
+
+    public void setId_logro(int id_logro) {
+        this.id_logro = id_logro;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("BLUE","Receive state: "+intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0));
@@ -21,7 +31,7 @@ public class BluetoothChangeListener extends BroadcastReceiver{
             QuestList.generarNotificacion(4, "Bluetooth",
                     "Has activado el bluetooth", R.drawable.ic_cascos);
 
-            QuestList.usarConectarBluetooth(false);
+            QuestList.usarConectarBluetooth(false, getId_logro());
         }
     }
 }
