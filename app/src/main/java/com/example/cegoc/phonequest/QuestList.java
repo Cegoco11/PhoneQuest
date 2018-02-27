@@ -546,7 +546,30 @@ public class QuestList extends AppCompatActivity {
     public void reactivarLogros(){
         for(Logro o : logros){
             if(o.getEstado()==0){
-                activarMision(o.getTipo());
+                // Gestiono si realmente se pueden cumplir los logros antes de activarlos
+                switch(o.getEstado()){
+                    case 3:
+                        // Si no se puede, modifico el estado, lo guardo y actualizo
+                        if(!sePuedeCargar()){
+                            modificaEstado(o.getID_LOGRO(),0);
+                            guardaLogros(logros);
+                            recreate();
+                        }
+                        break;
+                    case 4:
+                        // Si no se puede, modifico el estado, lo guardo y actualizo
+                        if(!sePuedeDescargar()){
+                            creaCustomDialog_error("No tienes los requisitos para completar" +
+                                    " un logro en este momento, se ha desactivado esa mision.");
+                            modificaEstado(o.getID_LOGRO(),0);
+                            guardaLogros(logros);
+                            recreate();
+                        }
+                        break;
+                    default:
+                        activarMision(o.getTipo());
+                }
+
             }
         }
     }
