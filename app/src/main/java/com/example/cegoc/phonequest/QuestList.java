@@ -554,22 +554,23 @@ public class QuestList extends AppCompatActivity {
                             modificaEstado(o.getID_LOGRO(),0);
                             guardaLogros(logros);
                             recreate();
+                            creaCustomDialog_error("No tienes los requisitos para completar" +
+                                    " un logro en este momento, se ha desactivado esa mision.");
                         }
                         break;
                     case 4:
                         // Si no se puede, modifico el estado, lo guardo y actualizo
                         if(!sePuedeDescargar()){
-                            creaCustomDialog_error("No tienes los requisitos para completar" +
-                                    " un logro en este momento, se ha desactivado esa mision.");
                             modificaEstado(o.getID_LOGRO(),0);
                             guardaLogros(logros);
                             recreate();
+                            creaCustomDialog_error("No tienes los requisitos para completar" +
+                                    " un logro en este momento, se ha desactivado esa mision.");
                         }
                         break;
                     default:
                         activarMision(o.getTipo());
                 }
-
             }
         }
     }
