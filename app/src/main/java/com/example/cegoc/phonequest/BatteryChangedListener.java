@@ -12,7 +12,7 @@ import android.util.Log;
  *
  * @author Caesar
  */
-public class BatteryChangedListener extends BroadcastReceiver {
+public class BatteryChangedListener extends ChangeListener {
 
     public static final int PORCENTAJE_DESCARGA=2;
     public static final int PORCENTAJE_CARGA=4;
@@ -20,20 +20,11 @@ public class BatteryChangedListener extends BroadcastReceiver {
     private int level;
     private boolean control;
     private boolean eleccion;
-    private int id_logro;
 
     public BatteryChangedListener(boolean b){
         this.level=-5;
         this.control=true;
         this.eleccion=b;
-    }
-
-    public int getId_logro() {
-        return id_logro;
-    }
-
-    public void setId_logro(int id_logro) {
-        this.id_logro = id_logro;
     }
 
     public void setLevel(int level) {

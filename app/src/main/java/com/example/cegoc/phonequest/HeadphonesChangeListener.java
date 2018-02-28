@@ -10,17 +10,7 @@ import android.content.Intent;
  * @author Caesar
  */
 
-public class HeadphonesChangeListener extends BroadcastReceiver {
-
-    private int id_logro;
-
-    public int getId_logro() {
-        return id_logro;
-    }
-
-    public void setId_logro(int id_logro) {
-        this.id_logro = id_logro;
-    }
+public class HeadphonesChangeListener extends ChangeListener {
 
     @Override
     public void onReceive(Context context, Intent intent) {

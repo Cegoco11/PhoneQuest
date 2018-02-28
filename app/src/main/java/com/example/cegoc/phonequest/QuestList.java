@@ -267,7 +267,7 @@ public class QuestList extends AppCompatActivity {
             broadCast_DescargarMovil.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_DescargarMovil);
-            completaMisionDescarga(contextActivity);
+            completaMision(contextActivity, broadCast_DescargarMovil);
         }
     }
 
@@ -282,7 +282,7 @@ public class QuestList extends AppCompatActivity {
             broadCast_CargarMovil.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_CargarMovil);
-            completaMisionCarga(contextActivity);
+            completaMision(contextActivity, broadCast_CargarMovil);
         }
     }
 
@@ -297,7 +297,7 @@ public class QuestList extends AppCompatActivity {
             broadCast_ConectarCascos.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarCascos);
-            completaMisionCascos(contextActivity);
+            completaMision(contextActivity, broadCast_ConectarCascos);
         }
     }
 
@@ -312,7 +312,7 @@ public class QuestList extends AppCompatActivity {
             broadCast_ConectarUsb.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarUsb);
-            completaMisionUSB(contextActivity);
+            completaMision(contextActivity, broadCast_ConectarUsb);
         }
     }
 
@@ -327,7 +327,7 @@ public class QuestList extends AppCompatActivity {
             broadCast_ConectarBlue.setId_logro(id);
         } else{
             context.unregisterReceiver(broadCast_ConectarBlue);
-            completaMisionBlue(contextActivity);
+            completaMision(contextActivity, broadCast_ConectarBlue);
         }
     }
 
@@ -639,65 +639,14 @@ public class QuestList extends AppCompatActivity {
         recreate();
     }
 
-//     ToDo
-//     Modular las funciones de completar usando herencia, la clase padre heredaria de
-//     BroadcastReceiver, y las hijas de esta clase padre, que es la que contiene el
-//     atributo id y el get y set correspondientes.
-//     Al pasar como parametro al metodo podulado los hijos, buscando en el parametro un padre
-//     puedo conseguir la id, y asi modularlo, de todas formas estar atento
-//     ya que estoy diciendolo de memoria
-
     /**
-     * Metodo que completa la mision USB
+     * Metodo que completa la mision del tipo que se pasa como parametro
      *
-     * @param mContext Contexto para poder utilizar el recreate()
+     * @param mContext contexto para poder usar el recreate()
+     * @param aux
      */
-    public static void completaMisionUSB(Activity mContext){
-        modificaEstado(broadCast_ConectarUsb.getId_logro(),2);
-        guardaLogros(logros);
-        mContext.recreate();
-    }
-
-    /**
-     * Metodo que completa la mision de carga
-     *
-     * @param mContext Contexto para poder utilizar el recreate()
-     */
-    public static void completaMisionCarga(Activity mContext){
-        modificaEstado(broadCast_CargarMovil.getId_logro(),2);
-        guardaLogros(logros);
-        mContext.recreate();
-    }
-
-    /**
-     * Metodo que completa la mision de descarga
-     *
-     * @param mContext Contexto para poder utilizar el recreate()
-     */
-    public static void completaMisionDescarga(Activity mContext){
-        modificaEstado(broadCast_DescargarMovil.getId_logro(),2);
-        guardaLogros(logros);
-        mContext.recreate();
-    }
-
-    /**
-     * Metodo que completa la mision de activar el bluetooth
-     *
-     * @param mContext Contexto para poder utilizar el recreate()
-     */
-    public static void completaMisionBlue(Activity mContext){
-        modificaEstado(broadCast_ConectarBlue.getId_logro(),2);
-        guardaLogros(logros);
-        mContext.recreate();
-    }
-
-    /**
-     * Metodo que completa la mision de conectar los cascos
-     *
-     * @param mContext Contexto para poder utilizar el recreate()
-     */
-    public static void completaMisionCascos(Activity mContext){
-        modificaEstado(broadCast_ConectarCascos.getId_logro(),2);
+    public static void completaMision(Activity mContext, ChangeListener aux){
+        modificaEstado(aux.getId_logro(), 2);
         guardaLogros(logros);
         mContext.recreate();
     }

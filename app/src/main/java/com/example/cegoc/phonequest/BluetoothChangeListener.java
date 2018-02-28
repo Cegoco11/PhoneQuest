@@ -12,17 +12,7 @@ import android.util.Log;
  * @author David y Caesar
  */
 
-public class BluetoothChangeListener extends BroadcastReceiver{
-
-    private int id_logro;
-
-    public int getId_logro() {
-        return id_logro;
-    }
-
-    public void setId_logro(int id_logro) {
-        this.id_logro = id_logro;
-    }
+public class BluetoothChangeListener extends ChangeListener{
 
     @Override
     public void onReceive(Context context, Intent intent) {
