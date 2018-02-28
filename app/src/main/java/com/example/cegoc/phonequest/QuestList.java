@@ -368,23 +368,18 @@ public class QuestList extends AppCompatActivity {
     private void activarMision(int num, int id){
         switch (num){
             case 1:
-                Toast.makeText(context, "Mision 1 activada", Toast.LENGTH_SHORT).show();
                 usarConectarCascos(true, id);
                 break;
             case 2:
-                Toast.makeText(context, "Mision 2 activada", Toast.LENGTH_SHORT).show();
                 usarConectarUsb(true, id);
                 break;
             case 3:
                 usarDescargarMovil(true, id);
-                Toast.makeText(context, "Mision 3 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 4:
                 usarCargarMovil(true, id);
-                Toast.makeText(context, "Mision 4 activada", Toast.LENGTH_SHORT).show();;
                 break;
             case 5:
-                Toast.makeText(context, "Mision 5 activada", Toast.LENGTH_SHORT).show();
                 usarConectarBluetooth(true, id);
                 break;
             default:
@@ -425,8 +420,6 @@ public class QuestList extends AppCompatActivity {
      * @param o Logro con el que estoy
      */
     private void creaCustomDialog_pregunta(final Logro o){
-        //LayoutInflater inflater = getLayoutInflater();
-        //View aux=inflater.inflate(R.layout.custom_dialog_pregunta,null);
         View aux=View.inflate(this, R.layout.custom_dialog_pregunta, null);
 
         final Dialog ad=new Dialog(QuestList.this);
@@ -434,6 +427,7 @@ public class QuestList extends AppCompatActivity {
         ad.setContentView(aux);
 
         TextView texto=aux.findViewById(R.id.custom_dialog_text1);
+        //ToDo Traduccion
         texto.setText("Estas seguro?");
         ImageView btnOk=aux.findViewById(R.id.custom_dialog_btnOk);
         btnOk.setOnClickListener(new View.OnClickListener() {
@@ -458,6 +452,7 @@ public class QuestList extends AppCompatActivity {
                             clickParaFila(tipoAux, o);
                         } else{
                             ad.dismiss();
+                            //ToDo Traduccion
                             creaCustomDialog_error("No dispones de los requisitos " +
                                     "para completar esta mision");
                         }
@@ -467,6 +462,7 @@ public class QuestList extends AppCompatActivity {
                             clickParaFila(tipoAux, o);
                         } else{
                             ad.dismiss();
+                            //ToDo Traduccion
                             creaCustomDialog_error("No dispones de los requisitos " +
                                     "para completar esta mision");
                         }
@@ -511,9 +507,6 @@ public class QuestList extends AppCompatActivity {
      * @param s texto del dialogo
      */
     private void creaCustomDialog_error(String s){
-        //LayoutInflater inflater = getLayoutInflater();
-        //View.inflate(context, R.layout.custom_dialog_error, null);
-        //View aux=inflater.inflate(R.layout.custom_dialog_error,null);
         View aux=View.inflate(context, R.layout.custom_dialog_error, null);
 
         final Dialog ad=new Dialog(QuestList.this);
@@ -583,6 +576,7 @@ public class QuestList extends AppCompatActivity {
                             modificaEstado(o.getID_LOGRO(),1);
                             guardaLogros(logros);
                             recreate();
+                            //ToDo Traduccion
                             creaCustomDialog_error("No tienes los requisitos para completar" +
                                     " un logro en este momento, se ha desactivado esa mision.");
                         } else{
@@ -595,6 +589,7 @@ public class QuestList extends AppCompatActivity {
                             modificaEstado(o.getID_LOGRO(),1);
                             guardaLogros(logros);
                             recreate();
+                            //ToDo Traduccion
                             creaCustomDialog_error("No tienes los requisitos para completar" +
                                     " un logro en este momento, se ha desactivado esa mision.");
                         } else{
@@ -643,7 +638,7 @@ public class QuestList extends AppCompatActivity {
      * Metodo que completa la mision del tipo que se pasa como parametro
      *
      * @param mContext contexto para poder usar el recreate()
-     * @param aux
+     * @param aux broadcast que desactivar
      */
     public static void completaMision(Activity mContext, ChangeListener aux){
         modificaEstado(aux.getId_logro(), 2);
