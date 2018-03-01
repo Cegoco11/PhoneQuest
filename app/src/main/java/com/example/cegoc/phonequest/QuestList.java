@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
 /**
  *
  */
@@ -469,7 +468,13 @@ public class QuestList extends AppCompatActivity {
                         break;
                     // Para todos los demas casos se hace con normalidad
                     default:
-                        clickParaFila(tipoAux, o);
+                        // Aqui se controla si ya existe un logro activo
+                        if(existeLogroActivo(tipoAux)){
+                            ad.dismiss();
+                            creaCustomDialog_error("Ya hay una mision activa de este tipo");
+                        } else {
+                            clickParaFila(tipoAux, o);
+                        }
                 }
             }
         });
@@ -604,21 +609,6 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
-     * Busca un tipo de logro en el array de logros
-     *
-     * @param tipo tipo de logro que buscamos
-     * @return true si encuentra el tipo, false si no
-     */
-    public boolean existeLogro(int tipo){
-        for(Logro o : logros){
-            if(o.getTipo()==tipo){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Metodo auxiliar que elige que mision se activa,
      * desactiva el clickable, modifica el estado del logro, y
      * guarda la modificacion
@@ -644,5 +634,29 @@ public class QuestList extends AppCompatActivity {
         modificaEstado(aux.getId_logro(), 2);
         guardaLogros(logros);
         mContext.recreate();
+    }
+
+    /**
+     * Busca un tipo de logro y si esta activo en el array de logros
+     *
+     * @param tipo tipo de logro que buscamos
+     * @return true si lo encuentra, false si no
+     */
+    public static boolean existeLogroActivo(int tipo){
+        for(Logro o : logros){
+            if(o.getTipo()==tipo && o.getEstado()==0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Genera un logro aleatorio y lo guarda en el array
+     */
+    public static void generaLogroAleatorio(){
+        int random=(int)(Math.random()*Logro.TOTAL_LOGROS+1);
+        logros.add(new Logro(random));
+        guardaLogros(logros);
     }
 }

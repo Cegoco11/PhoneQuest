@@ -1,9 +1,12 @@
 package com.example.cegoc.phonequest;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ public class Menu extends AppCompatActivity {
 
     public static MediaPlayer click_sound;
     private MediaPlayer menu_sound;
+    private CountDownTimer cdt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +36,20 @@ public class Menu extends AppCompatActivity {
         click_sound=MediaPlayer.create(this, R.raw.click);
     }
 
-    public void onPause(){
+//    @Override
+//    protected void onDestroy(){
+//        super.onDestroy();
+//        cdt.cancel();
+//    }
+
+    @Override
+    protected void onPause(){
         super.onPause();
         menu_sound.pause();
     }
 
-    public void onResume(){
+    @Override
+    protected void onResume(){
         super.onResume();
         menu_sound.start();
     }
@@ -116,8 +128,6 @@ public class Menu extends AppCompatActivity {
      * Crea un dialogo personalizado de tipo error
      */
     private void creaCustomDialog_error(){
-        //LayoutInflater inflater = getLayoutInflater();
-        //View aux=inflater.inflate(R.layout.custom_dialog_error,null);
         View aux=View.inflate(this, R.layout.custom_dialog_error, null);
 
         final Dialog ad=new Dialog(Menu.this);
@@ -125,9 +135,40 @@ public class Menu extends AppCompatActivity {
         ad.setContentView(aux);
 
         TextView texto=aux.findViewById(R.id.custom_dialog_text2);
+        //ToDo Traducir
         texto.setText("No disponible por el momento");
 
         ad.create();
         ad.show();
+    }
+
+    /**
+     * Metodo que hace una cuenta atras de X tiempo, y cuando este pasa manda una notificacion,
+     * avisando de que se ha generado una nueva mision aleatoria
+     */
+    public void cuentaAtras(long tiempoTotal){
+        long milisegundos = System.currentTimeMillis();
+        SharedPreferences prefe=getSharedPreferences("config", Context.MODE_PRIVATE);
+        long milisguardados = prefe.getLong("tiempoGuardado",0);
+        cdt = new CountDownTimer(tiempoTotal-(milisegundos - milisguardados), 1000){
+            public void onTick(long millisUntilFinished){
+
+            }
+            public  void onFinish(){
+                // Añade mision aleatoria
+                // Vuelve a poner en marcha el cronometro
+            }
+        }.start();
+    }
+
+    /**
+     *
+     */
+    public void actualizaCuentaAtras(){
+        long milisegundos = System.currentTimeMillis();
+        SharedPreferences prefe=getSharedPreferences("config", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefe.edit();
+        editor.putLong("tiempoGuardado", milisegundos);
+        editor.apply();
     }
 }

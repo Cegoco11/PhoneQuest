@@ -15,8 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("all")
 public class Logro implements Serializable{
 
+    public static final int TOTAL_LOGROS=5;
     private static final AtomicInteger count = new AtomicInteger(0);
-    private final float tiempoCreaccion;
+    private final long tiempoCreaccion;
     private final int ID_LOGRO;
     private final int tipoLogro;
     private int img;
