@@ -218,7 +218,7 @@ public class QuestList extends AppCompatActivity {
                     aux_img2.setVisibility(View.INVISIBLE);
                     aux_text.setPaintFlags(aux_text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     aux_linear.setClickable(false);
-                    convertToGrayscale(aux_img.getDrawable());
+                    aux_img.setImageResource(logros.get(i).getImg2());
             }
 
             aux_linear.addView(aux_img);
@@ -633,6 +633,7 @@ public class QuestList extends AppCompatActivity {
     public static void completaMision(Activity mContext, ChangeListener aux){
         modificaEstado(aux.getId_logro(), 2);
         guardaLogros(logros);
+        generaLogroAleatorio();
         mContext.recreate();
     }
 
@@ -652,11 +653,12 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
-     * Genera un logro aleatorio y lo guarda en el array
+     * Genera un logro aleatorio, lo guarda en el array y refresca
      */
     public static void generaLogroAleatorio(){
         int random=(int)(Math.random()*Logro.TOTAL_LOGROS+1);
         logros.add(new Logro(random));
         guardaLogros(logros);
+        contextActivity.recreate();
     }
 }

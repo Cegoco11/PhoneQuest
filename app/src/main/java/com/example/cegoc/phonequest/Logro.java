@@ -21,6 +21,7 @@ public class Logro implements Serializable{
     private final int ID_LOGRO;
     private final int tipoLogro;
     private int img;
+    private int img2;
     private String texto;
     private int estado; //0 Mision activada; 1 Mision nueva; 2 Mision completada
 
@@ -42,26 +43,32 @@ public class Logro implements Serializable{
         switch (tipo){
             case 1:
                 this.img=R.drawable.icon1;
+                this.img2=R.drawable.icon1_b;
                 this.texto="Conectar cascos";
                 break;
             case 2:
                 this.img=R.drawable.icon2;
+                this.img2=R.drawable.icon2_b;
                 this.texto="Conectar USB";
                 break;
             case 3:
                 this.img=R.drawable.icon3;
+                this.img2=R.drawable.icon3_b;
                 this.texto="Descargar Movil";
                 break;
             case 4:
                 this.img=R.drawable.icon4;
+                this.img2=R.drawable.icon4_b;
                 this.texto="Cargar Movil";
                 break;
             case 5:
                 this.img=R.drawable.icon5;
+                this.img2=R.drawable.icon5_b;
                 this.texto="Activar Bluetooth";
                 break;
             default:
                 this.img=R.drawable.icon9;
+                this.img2=R.drawable.icon9_b;
                 this.texto="No especificado";
         }
     }
@@ -72,6 +79,10 @@ public class Logro implements Serializable{
 
     public int getImg() {
         return img;
+    }
+
+    public int getImg2() {
+        return img2;
     }
 
     public void setEstado(int s){

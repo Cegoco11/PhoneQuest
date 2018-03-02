@@ -34,13 +34,22 @@ public class Menu extends AppCompatActivity {
         menu_sound.start();
 
         click_sound=MediaPlayer.create(this, R.raw.click);
+
+        //ToDo CuentaAtras
+        SharedPreferences settings = getSharedPreferences("config", 0);
+        if (settings.getBoolean("firstTime", true)) {
+
+            settings.edit().putBoolean("firstTime", false).apply();
+        }
     }
 
-//    @Override
-//    protected void onDestroy(){
-//        super.onDestroy();
-//        cdt.cancel();
-//    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        if(cdt!=null){
+            cdt.cancel();
+        }
+    }
 
     @Override
     protected void onPause(){
