@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Logro implements Serializable{
 
     public static final int TOTAL_LOGROS=5;
-    private static final AtomicInteger count = new AtomicInteger(0);
+    //ToDo BUG Cuando se cierra la aplicacion se resetea este contador
+    private static final AtomicInteger count = new AtomicInteger();
     private final long tiempoCreaccion;
     private final int ID_LOGRO;
     private final int tipoLogro;

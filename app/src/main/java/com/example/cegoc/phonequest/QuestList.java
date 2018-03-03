@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -370,6 +371,9 @@ public class QuestList extends AppCompatActivity {
      * 5- Activar Bluetooth
      */
     private void activarMision(int num, int id){
+        Log.i("RANDOM", "Activar mision:");
+        Log.i("RANDOM", "La id es: "+id+"; El tipo es: "+num);
+        Log.i("RANDOM", "-----------------");
         switch (num){
             case 1:
                 usarConectarCascos(true, id);
@@ -661,7 +665,15 @@ public class QuestList extends AppCompatActivity {
      */
     public static void generaLogroAleatorio(){
         int random=(int)(Math.random()*Logro.TOTAL_LOGROS+1);
-        logros.add(new Logro(random));
+        Logro aux=new Logro(random);
+        Log.i("RANDOM", "Logro stats:");
+        Log.i("RANDOM", "La id es: "+aux.getID_LOGRO()
+                +"; El tipo es: " +aux.getTipo()
+                +"; El estado es: "+aux.getEstado()
+                +"; El texto es: "+aux.getTexto()
+                +"; El tiempo es: "+aux.getTiempoCreaccion());
+        Log.i("RANDOM", "-----------------");
+        logros.add(aux);
         guardaLogros(logros);
         contextActivity.recreate();
     }
