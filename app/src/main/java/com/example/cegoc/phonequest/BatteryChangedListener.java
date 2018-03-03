@@ -52,7 +52,7 @@ public class BatteryChangedListener extends ChangeListener {
                if (level < aux-(PORCENTAJE_CARGA-1)) {
                    Log.i("BATTERYLISTENER","CARGAR LOGRO COMPLETADO");
                     QuestList.generarNotificacion(2, "Bateria",
-                            "Se ha cargado un "+(PORCENTAJE_CARGA-1)+"%", R.drawable.ic_cascos);
+                            "Se ha cargado un "+(PORCENTAJE_CARGA-1)+"%");
                     setControl();
                     QuestList.usarCargarMovil(false, getId_logro());
                 }
@@ -60,7 +60,7 @@ public class BatteryChangedListener extends ChangeListener {
                 if (level > aux+(PORCENTAJE_DESCARGA-1)) {
                     Log.i("BATTERYLISTENER","DESCARGAR LOGRO COMPLETADO");
                     QuestList.generarNotificacion(3, "Bateria",
-                            "Se ha descargado un "+(PORCENTAJE_DESCARGA-1)+"%", R.drawable.ic_cascos);
+                            "Se ha descargado un "+(PORCENTAJE_DESCARGA-1)+"%");
                     QuestList.usarDescargarMovil(false, getId_logro());
                     setControl();
                 }

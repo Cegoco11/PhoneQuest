@@ -87,6 +87,12 @@ public class QuestList extends AppCompatActivity {
             settings.edit().putBoolean("firstTime", false).apply();
         }
 
+        // Se genera un logro aleatorio si generaLogros es true
+        if(settings.getBoolean("generaLogros", false)){
+            generaLogroAleatorio();
+            settings.edit().putBoolean("generaLogros", false).apply();
+        }
+
         list_sound=MediaPlayer.create(this, R.raw.quest_list_sound);
         list_sound.setLooping(true);
         list_sound.start();
@@ -336,14 +342,13 @@ public class QuestList extends AppCompatActivity {
      * @param id id de la notificacion
      * @param titulo titulo de la notificacion
      * @param contenido texto que va a tener la notificacion
-     * @param img imagen que queremos que se vea (R.drawable.nombre_de_la_imagen)
      */
     //ToDo Cambiar el deprecated
-    public static void generarNotificacion(int id,String titulo, String contenido, int img){
+    public static void generarNotificacion(int id,String titulo, String contenido){
         // Paso 1: creo la notificacion
         NotificationCompat.Builder prueba=new NotificationCompat.Builder(context);
-        prueba.setSmallIcon(img);
         prueba.setContentTitle(titulo);
+        prueba.setSmallIcon(R.drawable.ic_cascos);
         prueba.setContentText(contenido);
         prueba.setGroup("logros_app");
 
@@ -633,7 +638,6 @@ public class QuestList extends AppCompatActivity {
     public static void completaMision(Activity mContext, ChangeListener aux){
         modificaEstado(aux.getId_logro(), 2);
         guardaLogros(logros);
-        generaLogroAleatorio();
         mContext.recreate();
     }
 
@@ -653,7 +657,7 @@ public class QuestList extends AppCompatActivity {
     }
 
     /**
-     * Genera un logro aleatorio, lo guarda en el array y refresca
+     * Genera un logro aleatorio, lo guarda en el array
      */
     public static void generaLogroAleatorio(){
         int random=(int)(Math.random()*Logro.TOTAL_LOGROS+1);

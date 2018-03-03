@@ -44,31 +44,37 @@ public class Logro implements Serializable{
             case 1:
                 this.img=R.drawable.icon1;
                 this.img2=R.drawable.icon1_b;
+                //Todo Traduccion
                 this.texto="Conectar cascos";
                 break;
             case 2:
                 this.img=R.drawable.icon2;
                 this.img2=R.drawable.icon2_b;
+                //Todo Traduccion
                 this.texto="Conectar USB";
                 break;
             case 3:
                 this.img=R.drawable.icon3;
                 this.img2=R.drawable.icon3_b;
+                //Todo Traduccion
                 this.texto="Descargar Movil";
                 break;
             case 4:
                 this.img=R.drawable.icon4;
                 this.img2=R.drawable.icon4_b;
+                //Todo Traduccion
                 this.texto="Cargar Movil";
                 break;
             case 5:
                 this.img=R.drawable.icon5;
                 this.img2=R.drawable.icon5_b;
+                //Todo Traduccion
                 this.texto="Activar Bluetooth";
                 break;
             default:
                 this.img=R.drawable.icon9;
                 this.img2=R.drawable.icon9_b;
+                //Todo Traduccion
                 this.texto="No especificado";
         }
     }

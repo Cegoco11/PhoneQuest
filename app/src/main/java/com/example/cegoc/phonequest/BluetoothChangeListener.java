@@ -19,7 +19,7 @@ public class BluetoothChangeListener extends ChangeListener{
         Log.i("BLUE","Receive state: "+intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0));
         if(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0)==BluetoothAdapter.STATE_ON){
             QuestList.generarNotificacion(4, "Bluetooth",
-                    "Has activado el bluetooth", R.drawable.ic_cascos);
+                    "Has activado el bluetooth");
 
             QuestList.usarConectarBluetooth(false, getId_logro());
         }

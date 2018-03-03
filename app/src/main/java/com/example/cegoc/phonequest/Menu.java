@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ public class Menu extends AppCompatActivity {
 
     public static MediaPlayer click_sound;
     private MediaPlayer menu_sound;
-    private CountDownTimer cdt;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,26 +28,18 @@ public class Menu extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
+        context=getApplicationContext();
+
         menu_sound=MediaPlayer.create(this, R.raw.menu_sound);
         menu_sound.setLooping(true);
         menu_sound.start();
 
         click_sound=MediaPlayer.create(this, R.raw.click);
-
-        //ToDo CuentaAtras
-        SharedPreferences settings = getSharedPreferences("config", 0);
-        if (settings.getBoolean("firstTime", true)) {
-
-            settings.edit().putBoolean("firstTime", false).apply();
-        }
     }
 
     @Override
     protected void onDestroy(){
         super.onDestroy();
-        if(cdt!=null){
-            cdt.cancel();
-        }
     }
 
     @Override
@@ -61,12 +52,28 @@ public class Menu extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         menu_sound.start();
-    }
 
-    @Override
-    protected void onRestart(){
-        super.onRestart();
-        recreate();
+        SharedPreferences settings = getSharedPreferences("config", 0);
+        Long tiempoAcaba;
+
+        if (settings.getLong("tiempoAcaba", 0)==0) {
+            // Guardo el tiempo en el que quiero que la cuenta atras se pare
+            final long TIEMPO_CUENTAATRAS=60000; // 1 min en milliseconds
+            tiempoAcaba=System.currentTimeMillis()+TIEMPO_CUENTAATRAS;
+            settings.edit().putLong("tiempoAcaba", tiempoAcaba).apply();
+        } else{
+            Long tiempoActual=System.currentTimeMillis();
+            tiempoAcaba=settings.getLong("tiempoAcaba", 0);
+            // Si el tiempo actual es mayor que el guardado
+            if(tiempoAcaba!=0 && tiempoActual>tiempoAcaba){
+                // La cuenta atras ha finalizado
+                // Pongo el tiempoAcaba a 0
+                settings.edit().putLong("tiempoAcaba", 0).apply();
+                // Pongo generaLogros a true
+                settings.edit().putBoolean("generaLogros", true).apply();
+                creaCustomDialog_error("Has recibido una nueva mision!");
+            }
+        }
     }
 
     /**
@@ -106,8 +113,8 @@ public class Menu extends AppCompatActivity {
                 //Se desactiva el clickable
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
-
-                creaCustomDialog_error();
+                //ToDo Traducir
+                creaCustomDialog_error("No disponible por el momento");
             }
         }, 80);
     }
@@ -127,8 +134,8 @@ public class Menu extends AppCompatActivity {
                 //Se desactiva el clickable
                 v.setScaleX(1.0f);
                 v.setScaleY(1.0f);
-
-                creaCustomDialog_error();
+                //ToDo Traducir
+                creaCustomDialog_error("No disponible por el momento");
             }
         }, 80);
     }
@@ -136,7 +143,7 @@ public class Menu extends AppCompatActivity {
     /**
      * Crea un dialogo personalizado de tipo error
      */
-    private void creaCustomDialog_error(){
+    private void creaCustomDialog_error(String s){
         View aux=View.inflate(this, R.layout.custom_dialog_error, null);
 
         final Dialog ad=new Dialog(Menu.this);
@@ -144,40 +151,9 @@ public class Menu extends AppCompatActivity {
         ad.setContentView(aux);
 
         TextView texto=aux.findViewById(R.id.custom_dialog_text2);
-        //ToDo Traducir
-        texto.setText("No disponible por el momento");
+        texto.setText(s);
 
         ad.create();
         ad.show();
-    }
-
-    /**
-     * Metodo que hace una cuenta atras de X tiempo, y cuando este pasa manda una notificacion,
-     * avisando de que se ha generado una nueva mision aleatoria
-     */
-    public void cuentaAtras(long tiempoTotal){
-        long milisegundos = System.currentTimeMillis();
-        SharedPreferences prefe=getSharedPreferences("config", Context.MODE_PRIVATE);
-        long milisguardados = prefe.getLong("tiempoGuardado",0);
-        cdt = new CountDownTimer(tiempoTotal-(milisegundos - milisguardados), 1000){
-            public void onTick(long millisUntilFinished){
-
-            }
-            public  void onFinish(){
-                // Añade mision aleatoria
-                // Vuelve a poner en marcha el cronometro
-            }
-        }.start();
-    }
-
-    /**
-     *
-     */
-    public void actualizaCuentaAtras(){
-        long milisegundos = System.currentTimeMillis();
-        SharedPreferences prefe=getSharedPreferences("config", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefe.edit();
-        editor.putLong("tiempoGuardado", milisegundos);
-        editor.apply();
     }
 }

@@ -18,7 +18,7 @@ public class UsbChangeListener extends ChangeListener {
         if (action.equalsIgnoreCase("android.hardware.usb.action.USB_STATE")) {
             if (intent.getExtras().getBoolean("connected")) {
                 QuestList.generarNotificacion(1, "Cable USB",
-                        "Has conectado el usb", R.drawable.ic_cascos);
+                        "Has conectado el usb");
                 QuestList.usarConectarUsb(false, getId_logro());
             }
         }
