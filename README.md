@@ -75,7 +75,9 @@ Lo primero que se va a encontrar el usuario nada más abrir la aplicación es un
 En el menú principal, hay 3 botones:
 
 • Misiones: que nos llevará a la base de nuestra aplicación.
+
 • Estadísticas: que no será funcional hasta futuras actualizaciones.
+
 • Créditos: que no tampoco será funcional hasta futuras actualizaciones.
 
 Al intentar acceder a los que están incompletos, aparecerá un mensaje avisando que están estos apartados están en construcción.
